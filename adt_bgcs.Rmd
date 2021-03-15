@@ -1,0 +1,1463 @@
+---
+title: "adt_bgcs"
+author: "Reed M. Stubbendieck & Cameron R. Currie"
+
+output:
+  html_document:
+      code_download: true
+      toc: true
+      toc_depth: 3
+      toc_float:
+        collapsed: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+# initialize libraries
+library(circlize)
+library(cowplot)
+library(ComplexHeatmap)
+library(DESeq2)
+library(EnhancedVolcano)
+library(FSA)
+library(ggpmisc)
+library(ggpubr)
+library(ggrepel)
+library(nlme)
+library(rcompanion)
+library(readr)
+library(reshape2)
+library(rstatix)
+library(tidyverse)
+library(vegan)
+
+# source functions
+source("./scripts/r/adt_bgcs_functions.R")
+source("./scripts/r/ancom_v2.1.R")
+```
+
+```{r loading data, echo=FALSE, include=FALSE}
+# load in the required data sets for analysis
+
+## rawData
+
+### genome info
+eHOMD_genome_info <- read_delim("./rawData/SEQFID_info.txt", 
+                          "\t", escape_double = FALSE, trim_ws = TRUE)
+
+### hmp manifest
+hmp_adt_manifest <- read_delim("./rawData/hmp_adt_manifest.tsv", 
+    "\t", escape_double = FALSE, trim_ws = TRUE) 
+
+### hmp metadata
+hmp_adt_metadata <- read_delim("./rawData/hmp_adt_metadata.tsv", 
+    "\t", escape_double = FALSE, trim_ws = TRUE)
+
+## derivedData
+
+### cluster SEQFID
+
+eHOMD_cluster_SEQFID <- read_delim("./derivedData/cluster_SEQFIDs.tsv", 
+                          "\t", escape_double = FALSE, trim_ws = TRUE)
+
+### eHOMD cluster info
+
+eHOMD_cluster_info <- read_delim("./derivedData/eHOMD_cluster_info.tsv", 
+                          "\t", escape_double = FALSE, trim_ws = TRUE)
+
+### biosynthetic domain counts
+eHOMD_cluster_domain_counts <- read_delim("./derivedData/eHOMD_cluster_domain_counts.tsv", 
+                                          "\t", escape_double = FALSE, trim_ws = TRUE)
+
+### kallisto count output
+hmp_adt_kallisto_counts <- read_delim("./derivedData/hmp_adt_kallisto_counts.tsv", 
+    "\t", escape_double = FALSE, trim_ws = TRUE)
+
+### metaphlan genus level
+hmp_adt_metaphlan_genus <- read_delim("./derivedData/hmp_adt_metaphlan_genus.tsv", 
+    "\t", escape_double = FALSE, trim_ws = TRUE)
+
+### metaphlan species level
+hmp_adt_metaphlan_species <- read_delim("./derivedData/hmp_adt_metaphlan_species.tsv", 
+    "\t", escape_double = FALSE, trim_ws = TRUE)
+
+
+### metagenome read count
+metagenome_read_counts <- read_delim("./derivedData/hmp_adt_metagenome_read_counts.tsv", 
+    "\t", escape_double = FALSE, trim_ws = TRUE)
+
+### node metadata for BiG-SCAPE
+node_meta <- read_csv("./derivedData/node_meta_raw.csv")
+
+# set seed
+set.seed(8675309)
+```
+
+```{r color palettes, include=FALSE, echo=FALSE}
+# set color palettes
+
+## generate color scheme for heat map
+col_fun <- colorRamp2(c(0, 2.5, 5), c("#2C7BB6", "#FFFFBF", "#D7191C"))
+col_fun_species <- colorRamp2(c(0, 50, 100), c("#2C7BB6", "#FFFFBF", "#D7191C"))
+
+## generate color scheme for BGCs
+cluster_cols_assigned <- setNames(c("#9E0142","#D0384D","#EE6445","#FA9C58","#FDCD7B","#FEF0A7","#F3FAAD","#D0EC9C","#98D5A4","#5CB7A9","#3682BA","#5E4FA2"), 
+								  c("RiPP", "nrps", "hybrid", "other", "phosphonate", "butyrolactone", "siderophore", "terpene", "arylpolyene", "pks", "ectoine", "hserlactone")
+								  )
+clusters_fill_scale <- scale_fill_manual(name="cluster_type", values=cluster_cols_assigned)
+
+## generate color scheme for specific bacterial genera
+genus_cols_assigned <- setNames(c("#A6CEE3","#1F78B4","#B2DF8A","#33A02C","#FB9A99","#F55B5B","#FDBF6F","#FF7F00","#CAB2D6","#6A3D9A","#FFFF99","#B15928"),
+								c("Streptococcus", "Other", "Corynebacterium", "Rothia", "Cutibacterium", "Prevotella", "Actinomyces", "Aggregatibacter", "Capnocytophaga", "Fusobacterium", "Staphylococcus", "Neisseria")
+								)
+genus_fill_scale <- scale_fill_manual(name = "genus_type", values = genus_cols_assigned)
+
+## generate color scheme for ADT sites
+
+sites_cols_assigned <- setNames(c("#7FC97F","#A9B7B7","#D3B4BA","#FDC086","#FEEA92","#386CB0","#B2258F","#DF1F5C","#BF5B17", "#999999"),
+								c("dorsum of tongue", "portion of saliva", "throat", "palatine tonsil", "external naris", "buccal mucosa", "gingiva", "nasal cavity", "hard palate", "NA")
+								)
+sites_cols_fill <- scale_fill_manual(name = "site", values = sites_cols_assigned)
+sites_cols_color <- scale_color_manual(name = "site", values = sites_cols_assigned)
+```
+
+```{r meta_table generation, include=FALSE, echo=FALSE}
+# generate the meta_table to link file_id, sample_id, and site
+meta_table <- left_join(hmp_adt_manifest, hmp_adt_metadata, by="sample_id")
+meta_table <- meta_table %>%
+  select(file_id, sample_id, sample_body_site)
+# rename the columns for later ease of use
+colnames(meta_table) <- c("file_id", "sample_id", "site")
+```
+
+```{r eHOMD_BGCs generation, include=FALSE, echo=FALSE}
+# merge the cluster SEQFIDs onto the cluster info to associate each cluster with its genome
+eHOMD_BGCs <- left_join(eHOMD_cluster_SEQFID, eHOMD_cluster_info, by="cluster")
+
+eHOMD_BGCs <- eHOMD_BGCs %>%
+  # filter out poor quality clusters identified by subsequent analyses
+  filter(!(cluster == "cluster035" | cluster == "cluster666" | cluster == "cluster1400")) %>%
+  # mutate hybrid clusters denoted by a hyphen into their own cluster type
+  mutate(type = ifelse(grepl('-',type), "hybrid", type)) %>%
+  # and a new column for genus type based on the 11 focal genera in study
+  mutate(genus_type = 
+    ifelse(
+    genus == "Streptococcus" | genus == "Corynebacterium" | genus == "Staphylococcus" | genus == "Cutibacterium" | genus == "Capnocytophaga" | genus == "Neisseria" | genus == "Fusobacterium" | genus == "Rothia" | genus == "Actinomyces" | genus == "Aggregatibacter" | genus == "Prevotella", genus, "Other"
+  )) %>%
+  # add a new column for cluster_type and collapse subtypes into cluster_type
+  mutate(cluster_type = ifelse(
+    type == "bacteriocin" | type == "sactipeptide" | type == "thiopeptide" | type == "lantipeptide" | type == "lassopeptide" | type == "microcin" | type == "cyanobactin" | type == "linaridin" | type == "proteusin" | type == "glycocin", "RiPP", 
+    ifelse(type == "t1pks" | type == "t2pks" | type == "t3pks" | type == "transatpks" | type == "resorcinol" | type == "otherks", "pks", 
+    ifelse(type == "ladderane" | type == "acyl_amino_acids" | type == "blactam" | type == "phenazine", "other", type))
+    )) %>%
+  select(cluster, type, cluster_type, contig_edge, size, SEQFID, genus_type, genus, species, strain)
+
+# select a subset of genomes that have no clusters on contig edges
+eHOMD_BGCs_subset <- eHOMD_BGCs %>%
+  group_by(SEQFID) %>%
+  mutate(edge_count = sum(contig_edge)) %>%
+  filter(edge_count == 0)
+  
+```
+
+```{r bgc table processing, include=FALSE, echo=FALSE}
+# summarize BGC counts by cluster_type
+eHOMD_BGCs_counts <- eHOMD_BGCs %>%
+  group_by(cluster_type) %>%
+  summarize(Count=n())
+
+# summarize BGC counts by genus_type
+eHOMD_BGCS_by_genus <- eHOMD_BGCs %>%
+  group_by(genus_type) %>%
+  summarize(Count=n())
+  
+# summarize BGC counts by genome
+eHOMD_BGCs_by_strain <- eHOMD_BGCs_subset %>%
+  group_by(genus, species, strain, genus_type) %>%
+  summarize(Count = n())
+
+# add BGC counts to the eHOMD_genome_info
+## count number of BGCs in each genome based on the SEQFID, only include genomes that are not on contig_edges
+eHOMD_BGCs_by_genome <- eHOMD_BGCs_subset %>%
+  group_by(SEQFID) %>%
+  summarize(count=n())
+
+## pull SEQFID and genus_type from eHOMD_BGCs for summary
+SEQFID_meta <- eHOMD_BGCs %>%
+  select(SEQFID, genus_type) %>%
+  distinct()
+
+## add BGC counts to eHOMD_genome_info
+eHOMD_genome_info <- left_join(eHOMD_genome_info, eHOMD_BGCs_by_genome, by="SEQFID")
+
+## add genus_type to eHOMD_genome_info
+eHOMD_genome_info <- left_join(eHOMD_genome_info, SEQFID_meta, by="SEQFID")
+
+## select the relevant columns and convert bp to Mbp
+eHOMD_genome_info <- eHOMD_genome_info %>%
+  select(SEQFID, Contigs, Size_bp, count, genus_type) %>%
+  mutate(Size_bp = Size_bp/10^6) %>%
+  # filter to only select genomes >1 Mbp
+  filter(Size_bp >= 1)
+
+## assign a BGC count of 0 to genomes with no predicted BGCs
+eHOMD_genome_info$count[is.na(eHOMD_genome_info$count)] <- 0
+
+## assign genus_type of "Other" to genomes with no genus_type
+eHOMD_genome_info$genus_type[is.na(eHOMD_genome_info$genus_type)] <- "Other"
+
+## filter to only include genomes with at least 1 BGC for analysis
+eHOMD_genome_info <- eHOMD_genome_info %>%
+  filter(count > 0)
+
+## calculate Kendall rank correlation coefficient (tau)
+genome_size_bgc_tau <- cor.test(eHOMD_genome_info$Size_bp, eHOMD_genome_info$count,  method = "kendall")
+tau_annotation_label <- (paste0("\u03C4", "=", round(genome_size_bgc_tau$estimate, digits = 2), ", P=", signif(genome_size_bgc_tau$p.value, digits=3)))
+
+# remove intermediary objects that are no longer needed for subsequent analysis or figure generation
+rm(eHOMD_BGCs_by_genome)
+rm(SEQFID_meta)
+
+```
+
+```{r NRPS and T1PKS domains, echo=FALSE, include=FALSE}
+# merge NRPS & T1PKS BGC cluster info with biosynthetic domain counts and remove the now-unnecessary object
+eHOMD_cluster_domain_counts <- left_join(eHOMD_cluster_domain_counts, eHOMD_cluster_info, by="cluster")
+
+#eHOMD_pks_nrps_domain_counts <- left_join(eHOMD_pks_nrps_domain_counts, eHOMD_pks_nrps_cluster_info, by="cluster")
+
+# filter BGCs to only include those not on contig edges and aggregate the domain counts
+eHOMD_domain_counts_filtered <- eHOMD_cluster_domain_counts %>%
+  filter(contig_edge == "FALSE") %>%
+  filter(type == "nrps" | type == "t1pks") %>%
+  filter(domain == "AMP-binding" | domain == "PKS_KS") %>%
+  group_by(cluster, type) %>%
+  mutate(count = sum(counts)) %>%
+  select(cluster, type, count, size) %>%
+  distinct()
+
+# merge with eHOMD_BGCs
+eHOMD_domain_counts_filtered <- left_join(eHOMD_domain_counts_filtered, eHOMD_BGCs, by="cluster")
+
+# set histogram order
+eHOMD_domain_counts_filtered$genus_type <- factor(eHOMD_domain_counts_filtered$genus_type, 
+                                                  levels = c("Actinomyces", "Corynebacterium", "Cutibacterium", "Prevotella", "Rothia", "Staphylococcus", "Streptococcus", "Other"))
+
+# remove intermediary objects that are no longer needed for subsequent analysis or figure generation
+rm(eHOMD_pks_nrps_cluster_info)
+```
+
+```{r kallisto table processing, include=FALSE, echo=FALSE}
+# pre-process the kallisto count table
+## join the meta_table onto the cluster_counts
+hmp_adt_kallisto_counts <- left_join(hmp_adt_kallisto_counts, meta_table, by="file_id")
+  
+## filter out BGCs that were never detected, add pseudocounts, calculate size_factor for normalization
+hmp_adt_kallisto_counts <- hmp_adt_kallisto_counts %>%
+  # remove clusters that were never detected in the dataset
+  group_by(cluster) %>%
+  filter(sum(est_counts) >=1) %>%
+  ungroup() %>%
+  # add 1 pseudocount to the remaining clusters
+  mutate(est_counts = est_counts+1) %>%
+  # calculate the geometric mean for each cluster
+  mutate(geom_mean = sum(est_counts)^(1/length(unique(file_id)))) %>%
+  mutate(ratio_to_ref = est_counts/geom_mean) %>%
+  group_by(file_id) %>%
+  mutate(size_factor = median(ratio_to_ref)) %>%
+  ungroup() %>%
+  mutate(normalized_counts = (est_counts/size_factor)) %>%
+  mutate(log_normalized_counts = log10(est_counts/size_factor)) %>%
+  select(file_id, sample_id, site, cluster, est_counts, normalized_counts, log_normalized_counts)
+
+hmp_adt_kallisto_counts <- left_join(hmp_adt_kallisto_counts, eHOMD_BGCs, by="cluster")
+
+# generate a subset of the hmp_adt_kallisto_counts with lowly abundant BGCs filtered out (<=100)
+## identify BGCs represented by >100 total_normalized_counts
+cluster_filter <- hmp_adt_kallisto_counts %>%
+  group_by(cluster) %>%
+  mutate(total_normalized_counts = sum(log_normalized_counts)) %>%
+  select(cluster, total_normalized_counts) %>%
+  distinct() %>%
+  filter(total_normalized_counts > 100)
+
+## subset the hmp_adt_kallisto_counts object to only include BGCs represented by >100 total_normalized_counts
+cluster_counts_subset <- hmp_adt_kallisto_counts %>%
+  select(sample_id, cluster, log_normalized_counts) %>%
+  filter(cluster %in% cluster_filter$cluster)  
+
+# convert the cluster_counts_subset object into a matrix
+pre_bgc_count_matrix <- pivot_wider(cluster_counts_subset, names_from = cluster, values_from = log_normalized_counts)
+
+## convert cluster counts into matrix format
+pre_bgc_count_matrix <- as.matrix(pre_bgc_count_matrix)
+row.names(pre_bgc_count_matrix) <- pre_bgc_count_matrix[,1]
+bgc_count_matrix <- pre_bgc_count_matrix[,-1]
+mode(bgc_count_matrix) <- "numeric"
+
+## transpose the BGC count matrix so that columns represent metagenomes and rows represent BGCs
+bgc_count_matrix <- t(bgc_count_matrix)
+
+# heat map generation
+## generate the annotation frames for the heatmap
+### rows
+clusters_meta <- as.data.frame(rownames(bgc_count_matrix))
+colnames(clusters_meta) <- c("cluster")
+
+#### add cluster_type and genus_type to the annotation
+clusters_meta <- left_join(clusters_meta, eHOMD_BGCs)
+clusters_meta <- clusters_meta %>%
+  select(cluster_type, genus_type)
+clusters_meta <- as.data.frame(clusters_meta)
+colnames(clusters_meta) <- c("Type", "Genus")
+
+##### reorder the annotations
+clusters_meta <- clusters_meta[,c(2,1)]
+
+##### generate the complexHeatmap row annotation
+hb <- HeatmapAnnotation(df = clusters_meta,
+                       show_legend = FALSE, # switch
+                       which = "row",
+                       col = list(Type = cluster_cols_assigned,
+                                  Genus = genus_cols_assigned
+                                  ))
+
+#### for columns
+sites_meta <- as.data.frame(colnames(bgc_count_matrix))
+colnames(sites_meta) <- c("sample_id")
+sites_meta <- left_join(sites_meta, meta_table)
+sites_meta <- sites_meta %>%
+  select(sample_id, site)
+sites_meta <- as.data.frame(sites_meta)
+
+##### generate the complexHeatmap column annotation
+ha <- HeatmapAnnotation(Site = sites_meta$site,
+                       show_legend = FALSE,
+                       col = list(Site = sites_cols_assigned))
+
+### generate the heatmap legend
+lgd <- Legend(col_fun = col_fun, 
+             title = expression(paste(log[10])~"Normalized Counts"),
+             title_position = "topcenter",
+             legend_width = unit(4, "cm"),
+             direction = "horizontal")
+
+## generate the heat map
+ht <- Heatmap(matrix = bgc_count_matrix, 
+        name = "log10 Normalized Counts",
+        show_heatmap_legend = FALSE,
+        use_raster = TRUE,
+        col = col_fun,
+        clustering_distance_columns = "euclidean",
+        clustering_method_columns = "ward.D2", 
+        clustering_distance_rows = "euclidean",
+        clustering_method_rows = "ward.D2", 
+        show_row_dend=FALSE,
+        show_row_names = FALSE, show_column_names = FALSE,
+        top_annotation = ha,
+        left_annotation = hb)
+
+# run NMDS
+## generate a separate matrix from bgc_count_matrix for NMDS due to log10 transformation introducing negative values and the previous matrix being subsetted
+hmp_adt_kallisto_counts_pre <- hmp_adt_kallisto_counts %>%
+  select(sample_id, cluster, normalized_counts)
+
+### generate the BGC count matrix for NMDS
+pre_bgc_count_matrix_NMDS <- pivot_wider(hmp_adt_kallisto_counts_pre, names_from = cluster, values_from = normalized_counts)
+
+### convert cluster counts into matrix format
+pre_bgc_count_matrix_NMDS <- as.matrix(pre_bgc_count_matrix_NMDS)
+row.names(pre_bgc_count_matrix_NMDS) <- pre_bgc_count_matrix_NMDS[,1]
+bgc_count_matrix_NMDS <- pre_bgc_count_matrix_NMDS[,-1]
+mode(bgc_count_matrix_NMDS) <- "numeric"
+
+## check if the bgc_composition_nmds has already been run and loads the object if it has
+if (file.exists("./derivedData/r_objects/bgc_composition_nmds.rds")){
+  bgc_composition_nmds <- readRDS("./derivedData/r_objects/bgc_composition_nmds.rds")
+} else {
+  # perform NMDS with 2 dimensions and with 100 attempts
+  bgc_composition_nmds <- metaMDS(bgc_count_matrix_NMDS, k=2, trymax = 100)
+  # save the NMDS R object
+  saveRDS(bgc_composition_nmds, file = "./derivedData/r_objects/bgc_composition_nmds.rds")
+}
+
+## extract NMDS coordinates
+data_scores_bgc_composition <- as.data.frame(scores(bgc_composition_nmds))
+data_scores_bgc_composition <- tibble::rownames_to_column(data_scores_bgc_composition)
+colnames(data_scores_bgc_composition) <- c("sample_id", "NMDS1", "NMDS2")
+
+## add site information to the extracted coordinates
+data_scores_bgc_composition <- left_join(data_scores_bgc_composition, meta_table, by = "sample_id")
+data_scores_bgc_composition <- data_scores_bgc_composition %>%
+  select(sample_id, site, NMDS1, NMDS2) %>%
+  distinct()
+
+data_scores_bgc_composition_meta <- data_scores_bgc_composition %>%
+  select(sample_id, site)
+
+# ANOSIM test for BGC composition
+## check if the ano_bgc_composition has already been run and loads the object if it has
+if (file.exists("./derivedData/r_objects/ano_bgc_composition.rds")){
+  ano_bgc_composition <- readRDS("./derivedData/r_objects/ano_bgc_composition.rds")
+} else {
+  # ANSOSIM test for BGC composition
+  ano_bgc_composition <- anosim(bgc_count_matrix_NMDS, data_scores_bgc_composition_meta$site, distance = "bray", permutations = 10000)
+  # save the anosim R object
+  saveRDS(ano_bgc_composition, file = "./derivedData/r_objects/ano_bgc_composition.rds")
+}
+
+## extract the pertinent information from ANOSIM for generating labels
+ano_bgc_label1 <- paste("R=", round(ano_bgc_composition$statistic, digits = 2), sep = "")
+ano_bgc_label2 <- paste("P=", round(ano_bgc_composition$signif, digits = 4), sep = "")
+
+# remove intermediary objects that are no longer needed for subsequent analysis or figure generation
+rm(bgc_composition_nmds)
+rm(bgc_count_matrix_NMDS)
+rm(data_scores_bgc_composition_meta)
+rm(cluster_filter)
+rm(cluster_counts_subset)
+rm(pre_bgc_count_matrix)
+rm(pre_bgc_count_matrix_NMDS)
+rm(sites_meta)
+```
+
+```{r metaphlan genus table processing, include=FALSE, echo=FALSE}
+# pre-process the metaphlan genus table
+## mutate the genus into genus_type, complete all sample_id/genus combos, and reorder the factor levels in the metaphlan object
+hmp_adt_metaphlan_genus <- hmp_adt_metaphlan_genus %>%
+    mutate(genus_type = 
+    ifelse(
+    genus == "Streptococcus" | genus == "Corynebacterium" | genus == "Staphylococcus" | genus == "Cutibacterium" | genus == "Capnocytophaga" | genus == "Neisseria" | genus == "Fusobacterium" | genus == "Rothia" | genus == "Actinomyces" | genus == "Aggregatibacter" | genus == "Prevotella", genus, "Other"
+  )) %>%
+  select(file_id, genus_type, rel_abundance) %>%
+  complete(file_id, genus_type, fill = list(rel_abundance = 0)) %>%
+  group_by(file_id, genus_type) %>%
+  summarize(rel_abundance = sum(rel_abundance, na.rm = TRUE)) %>%
+  ungroup() %>%
+  # fix one instance where rounding causes one relative abundance value to exceed 100%
+  mutate(rel_abundance = ifelse(rel_abundance > 100, 100, rel_abundance))
+  
+hmp_adt_metaphlan_genus <- left_join(hmp_adt_metaphlan_genus, meta_table, by = "file_id")
+
+# reorder the metagenomes to match the order of the heatmap object ht 
+## note, this step takes time to run
+ht = draw(ht)
+column_order <- column_order(ht)
+bar_order <- colnames(bgc_count_matrix)[column_order]
+
+## mutate the genus into genus_type and reorder the factor levels in hmp_adt_metaphlan_genus
+hmp_adt_metaphlan_genus <- hmp_adt_metaphlan_genus %>%
+  mutate(sample_id = factor(sample_id, levels = bar_order)) %>%
+  mutate(genus_type = factor(genus_type, levels = c("Other","Actinomyces", "Aggregatibacter","Capnocytophaga", "Corynebacterium", "Cutibacterium", "Fusobacterium", "Neisseria", "Prevotella", "Rothia", "Staphylococcus", "Streptococcus")))
+
+# generate a subset of hmp_adt_metaphlan_genus for just the buccal mucosa, dorsum of tongue, external naris, and gingiva
+
+genus_order <- c("Actinomyces", "Aggregatibacter", "Capnocytophaga", "Corynebacterium", "Cutibacterium", "Fusobacterium", "Neisseria", "Prevotella", "Rothia", "Staphylococcus", "Streptococcus", "Other")
+
+hmp_adt_metaphlan_genus_subset <- hmp_adt_metaphlan_genus %>%
+  filter(site == "buccal mucosa" | site == "dorsum of tongue" | site == "external naris" | site == "gingiva") %>%
+  group_by(sample_id, genus_type) %>%
+  summarize(rel_abundance = sum(rel_abundance, na.rm = TRUE)) %>%
+  mutate(genus_type = factor(genus_type, levels = genus_order))
+
+## calculate a pseudocount before log transformation
+pseudocount_genus <- min(hmp_adt_metaphlan_genus_subset[hmp_adt_metaphlan_genus_subset$rel_abundance>0,"rel_abundance"])/2
+
+## add the pseudocount and log10 transform rel_abundance
+hmp_adt_metaphlan_genus_subset <- hmp_adt_metaphlan_genus_subset %>%
+  mutate(log_ra = log10((rel_abundance+pseudocount_genus)/100))
+
+## join the hmp_adt_metaphlan_genus_subset and meta_table
+hmp_adt_metaphlan_genus_subset <- left_join(hmp_adt_metaphlan_genus_subset, meta_table, by="sample_id")
+
+# remove intermediary objects that are no longer needed for subsequent analysis or figure generation
+rm(bar_order)
+rm(column_order)
+rm(genus_order)
+rm(pseudocount_genus)
+```
+
+```{r metaphlan species table processing, include=FALSE, echo=FALSE}
+# pre-process the metaphlan species table
+hmp_adt_metaphlan_species <- left_join(hmp_adt_metaphlan_species, meta_table, by = "file_id")
+
+# process hmp_adt_metaphlan_species for NMDS analysis
+## filter out low abundance species (<0.1%), high abundance species (100%), species that are not present in at least 25 samples, and UNKNOWN species
+hmp_adt_metaphlan_species_nmds <- hmp_adt_metaphlan_species %>%
+  filter(rel_abundance >= 0.01) %>%
+  filter(rel_abundance < 100)
+
+metaphlan_nmds_subset_filter <- hmp_adt_metaphlan_species_nmds %>%
+  group_by(species) %>%
+  summarize(Count=n()) %>%
+  filter(Count >= 25)
+
+hmp_adt_metaphlan_species_nmds <- hmp_adt_metaphlan_species_nmds %>%
+  filter(species %in% metaphlan_nmds_subset_filter$species) %>%
+  filter(!species == "UNKNOWN") %>%
+  select(sample_id, species, rel_abundance)
+
+## generate the species matrix
+pre_matrix_metaphlan_species <- pivot_wider(hmp_adt_metaphlan_species_nmds, names_from = species, values_from = rel_abundance)
+### set NAs to 0 abundance
+pre_matrix_metaphlan_species[is.na(pre_matrix_metaphlan_species)] <- 0
+
+## convert into matrix format
+pre_matrix_metaphlan_species <- as.matrix(pre_matrix_metaphlan_species)
+row.names(pre_matrix_metaphlan_species) <- pre_matrix_metaphlan_species[,1]
+metaphlan_species_matrix <- pre_matrix_metaphlan_species[,-1]
+mode(metaphlan_species_matrix) <- "numeric"
+
+# run NMDS
+## check if the metaphlan_species_nmds has already been run and loads the object if it has, otherwise runs NMDS
+if (file.exists("./derivedData/r_objects/metaphlan_species_nmds.rds")){
+  metaphlan_species_nmds <- readRDS("./derivedData/r_objects/metaphlan_species_nmds.rds")
+} else {
+  # perform NMDS with 2 dimensions and with 100 attempts
+  metaphlan_species_nmds <- metaMDS(metaphlan_species_matrix, k=2, trymax = 100)
+  # save the NMDS R object
+  saveRDS(metaphlan_species_nmds, file = "./derivedData/r_objects/metaphlan_species_nmds.rds")
+}
+
+## extract NMDS coordinates
+data_scores_metaphlan_species <- as.data.frame(scores(metaphlan_species_nmds))
+data_scores_metaphlan_species <- tibble::rownames_to_column(data_scores_metaphlan_species)
+colnames(data_scores_metaphlan_species) <- c("sample_id", "NMDS1", "NMDS2")
+
+## add site information to the extracted coordinates
+data_scores_metaphlan_species <- left_join(data_scores_metaphlan_species, meta_table, by = "sample_id")
+data_scores_metaphlan_species <- data_scores_metaphlan_species %>%
+  select(sample_id, site, NMDS1, NMDS2) %>%
+  distinct()
+
+data_scores_metaphlan_species_meta <- data_scores_metaphlan_species %>%
+  select(sample_id, site)
+
+# ANOSIM test for species composition
+## check if the ano_species_composition has already been run and loads the object if it has
+if (file.exists("./derivedData/r_objects/ano_species_composition.rds")){
+  ano_species_composition <- readRDS("./derivedData/r_objects/ano_species_composition.rds")
+} else {
+  # ANOSIM test for species composition
+  ano_species_composition <- anosim(metaphlan_species_matrix, data_scores_metaphlan_species_meta$site, distance = "bray", permutations = 10000)
+  # save the anosim R object
+  saveRDS(ano_species_composition, file = "./derivedData/r_objects/ano_species_composition.rds")
+}
+
+## extract the pertinent information from ANOSIM for generating labels
+ano_species_label1 <- paste("R=", round(ano_species_composition$statistic, digits = 2), sep = "")
+ano_species_label2 <- paste("P=", round(ano_species_composition$signif, digits = 4), sep = "")
+
+# remove intermediary objects that are no longer needed for subsequent analysis or figure generation
+rm(ano_species_composition)
+rm(data_scores_metaphlan_species_meta)
+rm(hmp_adt_metaphlan_species_nmds)
+rm(metaphlan_nmds_subset_filter)
+rm(pre_matrix_metaphlan_species)
+```
+
+```{r jaccard calculations, include=FALSE, echo=FALSE}
+# calculate the Jaccard similarity between clustering for species and BGCs
+
+## hierarchical clustering for BGCs, note this uses the same parameters at heat map ht
+bgc_hclust <- hclust(dist(t(bgc_count_matrix), method = "euclidean"), method = "ward.D2")
+## use cutree to cut into the four major clusters
+bgc_hclust_cut <- as.data.frame(cutree(bgc_hclust, k=4))
+
+bgc_hclust_cut$sample_id <- row.names(bgc_hclust_cut)
+colnames(bgc_hclust_cut) <- c("hclust", "sample_id")
+
+bgc_hclust_cut <- left_join(bgc_hclust_cut, meta_table)
+
+bgc_hclust_cut <- bgc_hclust_cut %>%
+  select(sample_id, site, hclust)
+
+## hierarchical clustering for species
+species_hclust <- hclust(dist(metaphlan_species_matrix, method = "euclidean"), method = "ward.D2")
+
+### using h=380 because this is the height that gives 4 distinct clusters
+species_hclust_cut <- as.data.frame(cutree(species_hclust, h=380))
+
+species_hclust_cut$sample_id <- row.names(species_hclust_cut)
+colnames(species_hclust_cut) <- c("hclust", "sample_id")
+
+species_hclust_cut <- left_join(species_hclust_cut, meta_table)
+
+species_hclust_cut <- species_hclust_cut %>%
+  select(sample_id, site, hclust)
+
+### remapping the cluster numbers in the species_hclust_cut object based on the composition of the bgc_hclust_cut
+species_hclust_cut_remapped <- species_hclust_cut %>%
+  mutate(remap = ifelse(hclust == 1, 3, 
+                        ifelse(hclust == 3, 1,
+                               ifelse(hclust == 4, 2, 4)))) %>%
+  select(sample_id, site, remap)
+
+## join the two cluster maps together
+matched_bgc_species_cluster_cut <- left_join(bgc_hclust_cut, species_hclust_cut_remapped)
+
+### determine if the sample_id clusters match for BGCs and species
+matched_bgc_species_cluster_cut <- matched_bgc_species_cluster_cut %>%
+  mutate(match=ifelse(hclust==remap, 1, 0)) %>%
+  filter(!is.na(match)) %>%
+  mutate(bgc = 1) %>%
+  select(bgc, match)
+
+## Jaccard test
+bgc_species_jaccard <- jaccard(matched_bgc_species_cluster_cut,1)
+
+# remove intermediary objects that are no longer needed for subsequent analysis or figure generation
+rm(bgc_hclust)
+rm(bgc_hclust_cut)
+rm(matched_bgc_species_cluster_cut)
+rm(species_hclust)
+rm(species_hclust_cut)
+rm(species_hclust_cut_remapped)
+```
+
+```{r shannon calculations, include=FALSE, echo=FALSE}
+# calculate the Shannon diversity index, Shannon's equitability, and richness for species
+shannon_species <- hmp_adt_metaphlan_species %>%
+  filter(rel_abundance > 0) %>%
+  group_by(sample_id) %>%
+  mutate(total = sum(rel_abundance)) %>%
+  mutate(total = ifelse(total>100, 100, total)) %>%
+  mutate(species_S = n()) %>%
+  ungroup() %>%
+  group_by(sample_id, species) %>%
+  mutate(pi = rel_abundance/total) %>%
+  mutate(h_term = pi*log(pi)) %>%
+  ungroup() %>%
+  select(sample_id, h_term, species_S) %>%
+  group_by(sample_id) %>%
+  summarize(species_H = -1*sum(h_term, na.rm = TRUE), species_S=max(species_S)) %>%
+  mutate(species_E = species_H/log(species_S))
+
+# calculate the Shannon diversity index, Shannon's equitability, and richness for BGCs
+shannon_bgc <- hmp_adt_kallisto_counts %>%
+  #filter out BGCs only represented by a single pseudocount
+  filter(est_counts > 1) %>%
+  group_by(sample_id) %>%
+  mutate(total = sum(normalized_counts)) %>%
+  mutate(bgc_S = n()) %>%
+  ungroup() %>%
+  group_by(sample_id, cluster) %>%
+  mutate(pi = normalized_counts/total) %>%
+  mutate(h_term = pi*log(pi)) %>%
+  ungroup() %>%
+  select(sample_id, h_term, bgc_S) %>%
+  group_by(sample_id) %>%
+  summarize(bgc_H = -1*sum(h_term, na.rm = TRUE), bgc_S=max(bgc_S)) %>%
+  mutate(bgc_E = bgc_H/log(bgc_S))
+
+# merge the two Shannon data frames together and with meta_table
+shannon <- left_join(shannon_species, shannon_bgc, by="sample_id")
+shannon <- left_join(shannon, meta_table, by = "sample_id")
+
+# filter out low species diversity and the hard palate, which is only represented by a single sample
+shannon <- shannon %>%
+  filter(species_H > 0) %>%
+  filter(!site == "hard palate")
+  
+# statistical tests and effect size calculations for determining if Shannon diversity index, Shannon's equitability, and richness for species and BGCs varies across ADT sites
+## Shannon diversity index
+compare_species_H <- compare_diversity(species_H)
+compare_bgc_H <- compare_diversity(bgc_H)
+
+## Richness
+compare_species_S <- compare_diversity(species_S)
+compare_bgc_S <- compare_diversity(bgc_S)
+
+## Shannon's equitability
+compare_species_E <- compare_diversity(species_E)
+compare_bgc_E <- compare_diversity(bgc_E)
+
+```
+
+```{r identify site-specific BGCs, include=FALSE, echo=FALSE}
+
+# Perform differential abundance analyses to identify enriched BGCs by ADT site
+## DESeq2 requires a count matrix with non-normalized interger counts
+cluster_counts_da_all <- hmp_adt_kallisto_counts %>%
+  mutate(est_counts = round(est_counts)) %>%
+  select(sample_id, cluster, est_counts)
+
+## convert cluster counts into matrix format
+pre_matrix <- pivot_wider(cluster_counts_da_all, names_from = sample_id, values_from = est_counts)
+pre_matrix <- as.matrix(pre_matrix)
+row.names(pre_matrix) <- pre_matrix[,1]
+bgc_count_matrix_da_all <- pre_matrix[,-1]
+mode(bgc_count_matrix_da_all) <- "numeric"
+
+## generate the metadata for bgc_count_matrix_da_all in the same order as the first table
+meta_table_da <- hmp_adt_kallisto_counts %>%
+  filter(sample_id %in% colnames(bgc_count_matrix_da_all)) %>%
+  mutate(dorsum_of_tongue = ifelse(site == "dorsum of tongue", "dorsum_of_tongue", "other")) %>%
+  mutate(buccal_mucosa = ifelse(site == "buccal mucosa", "buccal_mucosa", "other")) %>%
+  mutate(external_naris = ifelse(site == "external naris", "external_naris", "other")) %>%
+  mutate(gingiva = ifelse(site == "gingiva", "gingiva", "other")) %>%
+  select(sample_id, dorsum_of_tongue, buccal_mucosa, external_naris, gingiva) %>%
+  distinct()
+
+### need the rownames in meta_table_da to be the sample_id
+meta_table_da <- as.data.frame(meta_table_da)
+rownames(meta_table_da) <- meta_table_da$sample_id
+meta_table_da <- meta_table_da[,-1, drop=FALSE]
+
+## differential abundance analyis
+dds_buccal_mucosa <- dds_by_site(buccal_mucosa, bgc_count_matrix_da_all, meta_table_da)
+dds_tongue <- dds_by_site(dorsum_of_tongue, bgc_count_matrix_da_all, meta_table_da)
+dds_external_naris <- dds_by_site(external_naris, bgc_count_matrix_da_all, meta_table_da)
+dds_gingiva <- dds_by_site(gingiva, bgc_count_matrix_da_all, meta_table_da)
+
+## identify specific BGCs associated with each ADT site
+buccal_mocosa_enriched <- get_enriched(dds_buccal_mucosa)
+tongue_enriched <- get_enriched(dds_tongue)
+gingiva_enriched <- get_enriched(dds_gingiva)
+external_naris_enriched <- get_enriched(dds_external_naris)
+
+# generate the updated node_meta for Cytoscape
+
+## add the enriched site information to node_meta
+node_meta <- node_meta %>%
+  mutate(MiBIG = ifelse(startsWith(name, "BGC"), "yes", "no")) %>%
+  mutate(enriched_site = ifelse(MiBIG == "yes", "MiBIG", 
+                                ifelse(name %in% tongue_enriched$cluster, "dorsum of tongue", 
+                                ifelse(name %in% buccal_mocosa_enriched$cluster, "buccal mucosa",
+                                ifelse(name %in% gingiva_enriched$cluster, "gingiva",
+                                ifelse(name %in% external_naris_enriched$cluster, "external naris", "NA"
+                                )))))) %>%
+  mutate(cluster = name) %>%
+  select(cluster, enriched_site)
+
+## add BGC information to the nodes
+node_meta <- left_join(node_meta, eHOMD_BGCs, by="cluster")
+
+## add median count value per site to node_meta
+
+### calculate median count value for clusters enriched in buccal mucosa
+buccal_mucosa_enriched_counts <- cluster_med_counts("buccal mucosa", buccal_mocosa_enriched)
+
+### calculate median count value for clusters enriched in dorsum of tongue
+tongue_enriched_counts <- cluster_med_counts("dorsum of tongue", tongue_enriched)
+
+### calculate median count value for clusters enriched in external naris
+external_naris_enriched_counts <- cluster_med_counts("external naris", external_naris_enriched)
+
+### calculate median count value for clusters enriched in gingiva
+gingiva_enriched_counts <- cluster_med_counts("gingiva", gingiva_enriched)
+
+### combine all of the enriched counts into enriched_counts_all
+enriched_counts_all <- rbind(buccal_mucosa_enriched_counts, external_naris_enriched_counts, tongue_enriched_counts, gingiva_enriched_counts)
+
+### find the median value for clusters that are note enriched in any of the four ADT sites
+med_counts <- hmp_adt_kallisto_counts %>%
+  filter(!cluster %in% enriched_counts_all$cluster) %>%
+  group_by(cluster) %>%
+  summarize(cluster_med = median(log_normalized_counts))
+
+### combine the med_counts for non-site-specific BGCs into enriched_counts_all
+enriched_counts_all <- rbind(enriched_counts_all, med_counts)
+
+### join the cluster_med values into node_meta
+node_meta <- left_join(node_meta, enriched_counts_all, by="cluster")
+node_meta$cluster_med[is.na(node_meta$cluster_med)] <- min(node_meta$cluster_med, na.rm = TRUE)
+
+### write the new node metadata for CytoScape
+write.csv(node_meta, "./derivedData/node_meta_processed.csv", row.names = FALSE)
+
+enriched_bgcs_by_site <- node_meta %>%
+  group_by(enriched_site, cluster_type) %>%
+  summarize(Count=n()) %>%
+  filter(!enriched_site == "NA") %>%
+  filter(!enriched_site == "MiBIG")
+
+# remove intermediary objects that are no longer needed for subsequent analysis or figure generation
+rm(bgc_count_matrix_da_all)
+rm(buccal_mucosa_enriched_counts)
+rm(cluster_counts_da_all)
+rm(enriched_counts_all)
+rm(external_naris_enriched_counts)
+rm(gingiva_enriched_counts)
+rm(med_counts)
+rm(meta_table_da)
+rm(pre_matrix)
+rm(tongue_enriched_counts)
+
+```
+
+```{r ANCOM, include=FALSE, echo=FALSE}
+# process the hmp_adt_metaphlan_species into a matrix for ANCOM analysis
+
+## define cutoffs for metagenomes
+read_count_cuttoff <- 1000 # minimum number of reads
+metagenome_count_cutoff <- 10 # minimum number of metagenomes the taxa should occur in
+
+## join the hmp_adt_metaphlan_species with the read counts
+hmp_adt_metaphlan_species_counts <- left_join(hmp_adt_metaphlan_species, metagenome_read_counts, by="file_id")
+
+## convert the rel_abundance into an estimated read count based on total reads and filter metagenomes that do not meet the read_count_cuttoff
+hmp_adt_metaphlan_species_counts <- hmp_adt_metaphlan_species_counts %>%
+  mutate(counts = round(rel_abundance/100*readcounts)) %>%
+  filter(counts >= read_count_cuttoff)
+
+## filter out species that do not meet the metagenome_count_cutoff
+hmp_adt_metaphlan_species_counts_cutoff <- hmp_adt_metaphlan_species_counts %>%
+  group_by(species) %>%
+  summarize(count=n()) %>%
+  filter(count >= metagenome_count_cutoff)
+
+## select the two sites of interest
+hmp_adt_metaphlan_species_counts_subset <- hmp_adt_metaphlan_species_counts %>%
+  filter(site == "buccal mucosa" | site == "dorsum of tongue") %>%
+  filter(species %in% hmp_adt_metaphlan_species_counts_cutoff$species)
+
+## convert the hmp_adt_metaphlan_species_counts_subset into matrix format
+hmp_adt_metaphlan_species_counts_subset <- hmp_adt_metaphlan_species_counts_subset %>%
+  select(sample_id, species, counts)
+
+hmp_adt_metaphlan_species_counts_subset_matrix <- pivot_wider(hmp_adt_metaphlan_species_counts_subset, names_from = sample_id, values_from = counts)
+
+### convert NA to zero counts
+hmp_adt_metaphlan_species_counts_subset_matrix[is.na(hmp_adt_metaphlan_species_counts_subset_matrix)] <- 0
+
+### change taxa into row names
+taxa_id <- hmp_adt_metaphlan_species_counts_subset_matrix$species
+hmp_adt_metaphlan_species_counts_subset_matrix <- data.frame(hmp_adt_metaphlan_species_counts_subset_matrix[, -1], check.names = FALSE)
+rownames(hmp_adt_metaphlan_species_counts_subset_matrix) <- taxa_id
+
+## extract column names for ancom_metadata object
+ancom_metadata <- data.frame(sample_id = colnames(hmp_adt_metaphlan_species_counts_subset_matrix))
+ancom_metadata <- left_join(ancom_metadata, meta_table)
+
+# run ANCOM
+## set cutoffs
+out_cut = 0.01; zero_cut = 0.99; lib_cut = 10000; neg_lb = FALSE
+
+## pre-process the species table for ANCOM
+feature_table <- hmp_adt_metaphlan_species_counts_subset_matrix; sample_var = "sample_id"; group_var = NULL
+
+prepro <- feature_table_pre_process(feature_table, ancom_metadata, sample_var, group_var, 
+                                   out_cut, zero_cut, lib_cut, neg_lb)
+
+feature_table <- prepro$feature_table # Preprocessed feature table
+meta_data <- prepro$meta_data # Preprocessed metadata
+struc_zero <- prepro$structure_zeros # Structural zero info
+
+## set experimental paramaters
+main_var <- "site"
+p_adj_method <- "BH"
+alpha <- 0.05
+adj_formula <- NULL
+rand_formula <- NULL
+
+## run ANCOM
+ancom_results <- ANCOM(feature_table, meta_data, struc_zero, main_var, p_adj_method, 
+            alpha, adj_formula, rand_formula)
+
+## extract information from ancom_results for figure
+ancom_out <- ancom_results$fig$data
+
+## add site information to the ancom_out object
+ancom_out <- ancom_out %>%
+  mutate(site = case_when(
+          (x > 0.5 & y >= 0.9*max(ancom_out$y)) ~ "dorsum of tongue",
+          (x < -0.5 & y >= 0.9*max(ancom_out$y)) ~ "buccal mucosa",
+          TRUE ~ "NA"
+  ))
+
+ancom_out_labels <- ancom_out %>%
+  filter(startsWith(taxa_id, "Streptococcus")) %>%
+  filter(!startsWith(taxa_id, "Streptococcus_sp")) %>%
+  mutate(strep_name = taxa_id) %>% 
+  filter(y >= 0.9*max(ancom_out$y)) %>%
+  filter(x > 0.5 | x < -0.5)
+
+ancom_out_labels$strep_name <- gsub("_", " ", ancom_out_labels$strep_name)
+
+# process data for Streptococcus relative abundance plot
+metaphlan_streptococcus <- hmp_adt_metaphlan_species %>%
+  filter(site=="buccal mucosa" | site == "dorsum of tongue") %>%
+  mutate(species_type = ifelse(startsWith(species, "Streptococcus"), species, "Other")) %>%
+  select(file_id, species_type, rel_abundance) %>%
+  complete(file_id, species_type, fill = list(rel_abundance = 0)) %>%
+  group_by(file_id, species_type) %>%
+  summarize(rel_abundance = sum(rel_abundance, na.rm = TRUE)) %>%
+  filter(!species_type == "Other") %>%
+  mutate(species_type = ifelse(species_type %in% ancom_out_labels$taxa_id, species_type, "Other Streptococci")) %>%
+  filter(!species_type == "Other Streptococci") %>%
+  group_by(file_id, species_type) %>%
+  summarize(rel_abundance = sum(rel_abundance))
+
+## calculate pseudocount and log10 transform
+pseudocount_streptococcus <- min(metaphlan_streptococcus[metaphlan_streptococcus$rel_abundance>0,"rel_abundance"])/2
+
+metaphlan_streptococcus <- metaphlan_streptococcus %>%
+  mutate(log_ra = log10((rel_abundance+pseudocount_streptococcus)/100))
+
+### add the metadata to the metaphlan_all
+metaphlan_streptococcus <- left_join(metaphlan_streptococcus, meta_table, by = "file_id")
+
+### replace the underscore in Streptococcus name with space
+metaphlan_streptococcus$species_type <- gsub("Streptococcus_", "S. ", metaphlan_streptococcus$species_type)
+
+# remove intermediary objects that are no longer needed for subsequent analysis or figure generation
+rm(hmp_adt_metaphlan_species_counts)
+rm(hmp_adt_metaphlan_species_counts_cutoff)
+rm(hmp_adt_metaphlan_species_counts_subset)
+rm(taxa_id)
+rm(read_count_cuttoff)
+rm(meta_data)
+rm(metagenome_count_cutoff)
+rm(prepro)
+rm(pseudocount_streptococcus)
+```
+
+```{r gg_theme, include=FALSE, echo=FALSE}
+
+# standard theme for all ggplot objects
+adt_bgc_gg_theme <- theme_classic() +
+  theme(axis.text.y = element_text(color = "black"),
+        axis.text.x = element_text(color = "black"),
+        axis.ticks.y = element_line(color = "black", size = 0.25),
+        axis.ticks.x = element_line(color = "black", size = 0.25),
+        axis.line.x = element_blank(),
+        axis.line.y = element_blank(),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.25),
+        plot.background = element_blank(),
+        legend.position = "none",
+        legend.title=element_blank(),
+  )
+```
+
+# Figures
+
+## Main Text Figures
+### Figure 1
+
+```{r Figure 1, include=FALSE, echo=FALSE}
+# Figure 1
+## Graphs showing the counts of BGCs predicted in eHOMD genomes split in different ways (e.g., by genus_type, cluster_type)
+### Panel A
+#### bar graph of total BGC counts by cluster_type predicted in eHOMD genomes
+
+Figure_1_A <- ggplot() +
+  geom_bar(data=eHOMD_BGCs_counts, aes(y=Count, fill=cluster_type, x=cluster_type), stat = "identity", color = "black", size=0.25) +
+  xlab("BGC Type") +
+  ylab("BGC Count") +  
+  adt_bgc_gg_theme +
+  clusters_fill_scale +
+  coord_flip() +
+  scale_x_discrete(limits=rev(c("RiPP", "nrps", "terpene", "arylpolyene", "pks", "siderophore", "hserlactone", "ectoine", "phosphonate", "butyrolactone", "hybrid", "other")),
+                              labels=rev(c("RiPP", "NRPS", "Terpene", "Aryl Polyene", "PKS", "Siderophore", "HSL", "Ectoine", "Phosphonate", "Butyrolactone", "Hybrid", "Other")))
+
+## Panel B
+### bar graph of total BGC counts by genus predicted in eHOMD genomes
+
+Figure_1_B <- ggplot() +
+  geom_bar(data=eHOMD_BGCS_by_genus, aes(y=Count, fill=genus_type, x=genus_type), stat = "identity", color = "black", size=0.25) +
+  xlab("Genus") +
+  ylab("BGC Count") +  
+  adt_bgc_gg_theme +
+  genus_fill_scale +
+  coord_flip() +
+  scale_x_discrete(limits=rev(c("Streptococcus", "Corynebacterium", "Staphylococcus", "Neisseria", "Prevotella", "Fusobacterium", "Capnocytophaga", "Aggregatibacter", "Actinomyces", "Cutibacterium", "Rothia", "Other")))
+
+## Panel C
+### jitter graph of total BGCs per strain predicted in eHOMD genomes
+
+## identify the median BGC counts per strain
+bp <- ggplot(data = eHOMD_BGCs_by_strain, aes(y=Count, x=genus_type)) + geom_boxplot(aes(y=Count, x=genus_type))
+dat <- ggplot_build(bp)$data[[1]]
+dat <- dat %>%
+  select(group, xmin, xmax, middle)
+dat_median <- dat$middle
+#### this variable converts alphabetical order to the order used in colorder then reorders the middle column to match
+dat_order <- c(12,4,11,7,9,6,3,2,1,5,10,8)
+dat$middle <- rev(dat_median[dat_order])
+
+Figure_1_C <- ggplot() +
+  geom_jitter(data = eHOMD_BGCs_by_strain, aes(y=Count, x=genus_type, fill=genus_type), shape = 21, col="black", stroke=0.1, height = 0.1, size=1) +
+  geom_segment(data=dat, aes(x=xmin, xend=xmax, y=middle, yend=middle), color="black", size=0.5) +
+  xlab("Genus") +
+  ylab("BGC Count/Genome") +
+  adt_bgc_gg_theme +
+  genus_fill_scale +
+  coord_flip() +
+  scale_x_discrete(limits=rev(c("Streptococcus", "Corynebacterium", "Staphylococcus", "Neisseria", "Prevotella", "Fusobacterium", "Capnocytophaga", "Aggregatibacter", "Actinomyces", "Cutibacterium", "Rothia", "Other"))) +
+  scale_y_continuous(breaks = seq(0, 20, by = 2))
+
+## Panel D
+### jitter plot of BGC Count/Genome vs. genome size
+
+Figure_1_D <- ggplot() +
+  geom_jitter(data=eHOMD_genome_info, aes(y=Size_bp, x=count, fill=genus_type), shape = 21, col="black", stroke=0.1, width = 0.25, size=1) +
+  ylab("Genome Size (Mb)") +
+  xlab("BGC Count/Genome") +
+  adt_bgc_gg_theme +
+  genus_fill_scale +
+  annotate("text", x=15, y=0.5, size=3, label = tau_annotation_label) + 
+  scale_x_continuous(breaks = seq(0, 20, by = 2))
+
+# combine the panels
+Figure_1 <- plot_grid(
+  Figure_1_A,
+  Figure_1_B,
+  Figure_1_C,
+  Figure_1_D,
+  align = 'vh', axis = 'l',
+  labels = c("A", "B", "C", "D"),
+  hjust = -1,
+  nrow = 2
+)
+
+ggsave("./figures/Figure_1.pdf", Figure_1, units = c("in"), width = 8, height = 6)
+```
+
+```{r, echo=FALSE}
+Figure_1
+```
+
+### Figure 2
+
+```{r Figure 2, include=FALSE, echo=FALSE}
+# Figure 2
+## this figure was further assembled in Inkscape to add the inset and to scale the heat map and bar plot
+## Panel A
+
+### the heat map for Figure 2 panel A was previously generated (see "kallisto table processing" chunk)
+### uncomment the following code to save a .pdf of the heat map
+
+pdf("./figures/Figure_2_A.pdf", width = 8, height = 5)
+draw(ht)
+dev.off()
+
+## Panel B
+### stacked bar plot of the relative abundances of different bacterial genera in same order as heat map
+Figure_2_B <- ggplot() +
+  geom_bar(data=hmp_adt_metaphlan_genus, aes(x=sample_id, y=rel_abundance, fill=genus_type), position="stack", stat="identity") +
+  ylab("Relative Abundance") +
+  adt_bgc_gg_theme +
+  genus_fill_scale +
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+
+ggsave("./figures/Figure_2_B.pdf", Figure_2_B, units=c("in"), width=8, height=5)
+```
+
+```{r, echo=FALSE}
+draw(ht)
+
+Figure_2_B
+```
+
+### Figure 3
+
+```{r Figure 3, include=FALSE, echo=FALSE}
+# Figure 3
+## NMDS plots of bacterial community composition at species level and BGC composition
+## the legend for Figure 3 was added in Inkscape
+
+### Panel A
+#### NMDS for bacterial community composition
+Figure_3_A <- ggplot() +
+  geom_point(data=data_scores_metaphlan_species, aes(x=NMDS1, y=NMDS2, fill=site, color=site), shape = 21, col="black", stroke=0.1) +
+  adt_bgc_gg_theme +
+  theme(aspect.ratio=1) +
+  sites_cols_fill +
+  sites_cols_color +
+  annotate("text", x=max(data_scores_metaphlan_species$NMDS1),y=max(data_scores_metaphlan_species$NMDS2),hjust=0.8,
+                               label = ano_species_label1) +
+                      annotate("text", x=max(data_scores_metaphlan_species$NMDS1),y=(0.9*max(data_scores_metaphlan_species$NMDS2)),hjust=0.8,
+                               label = ano_species_label2)
+
+### Panel B
+#### NMDS for BGC composition
+Figure_3_B <- ggplot() +
+  geom_point(data=data_scores_bgc_composition, aes(x=NMDS1, y=NMDS2, fill=site, color=site), shape = 21, col="black", stroke=0.1) +
+  adt_bgc_gg_theme +
+  theme(aspect.ratio=1) +
+  sites_cols_fill +
+  sites_cols_color +
+  annotate("text", x=max(data_scores_bgc_composition$NMDS1),y=max(data_scores_bgc_composition$NMDS2),hjust=0.8,
+                               label = ano_bgc_label1) +
+                      annotate("text", x=max(data_scores_bgc_composition$NMDS1),y=(0.9*max(data_scores_bgc_composition$NMDS2)),hjust=0.8,
+                               label = ano_bgc_label2)
+
+### Combine the panels
+Figure_3 <- plot_grid(
+  Figure_3_A,
+  Figure_3_B,
+  align = 'vh',
+  labels = c("A", "B"),
+  hjust = -1,
+  nrow = 1
+)
+
+Figure_3 <- plot_grid(Figure_3, nrow = 1, rel_heights = c(3, .3))
+
+ggsave("./figures/Figure_3.pdf", Figure_3, width = 8, height=4, units=c("in"))
+```
+
+```{r, echo=FALSE}
+Figure_3
+```
+
+### Figure 4
+
+```{r Figure 4, include=FALSE, echo=FALSE}
+# Figure 4
+## Box plots of Shannon's diversity index for bacterial communities and BGCs
+
+### Panel A
+#### Box plot comparing Shannon's diversity index for bacterial communities across sites
+Figure_4_A <- ggplot() +
+  geom_boxplot(data = shannon, aes(x = site, y = species_H, fill=site), outlier.shape = 21, col="black", outlier.stroke=0.1) +
+  ylab("H′ (species)") +
+  adt_bgc_gg_theme +
+  theme(axis.text.x = element_text(angle=45, hjust=1),
+        axis.title.x = element_blank()) +
+  sites_cols_fill +
+  sites_cols_color +
+  geom_text(data = compare_species_H$stats, aes(x = site, y = species_H, label = Letter)) +
+  geom_hline(yintercept = median(shannon$species_H), linetype="dashed", size=0.25)
+
+### Panel B
+#### Box plot comparing Shannon's diversity index for BGcs across sites
+Figure_4_B <- ggplot() +
+  geom_boxplot(data = shannon, aes(x = site, y = bgc_H, fill=site), outlier.shape = 21, col="black", outlier.stroke=0.1) +
+  ylab("H′ (BGC)") +
+  adt_bgc_gg_theme +
+  theme(axis.text.x = element_text(angle=45, hjust=1),
+        axis.title.x = element_blank()) +
+  sites_cols_fill +
+  sites_cols_color +
+  geom_text(data = compare_bgc_H$stats, aes(x = site, y = bgc_H, label = Letter)) +
+  geom_hline(yintercept = median(shannon$species_H), linetype="dashed", size=0.25)
+
+### Panel C
+#### scatter plots of Shannon's diversity index for BGCs vs. communities
+##### clean up the labels for R2 and P-value in Inkscape
+Figure_4_C <- ggplot(data = shannon, aes(x = species_H, y = bgc_H, fill=site, color=site)) +
+  geom_point(shape = 21, col="black", stroke=0.1) +
+  xlab("H′ (species)") +
+  ylab("H′ (BGC)") +
+  adt_bgc_gg_theme +
+  theme(aspect.ratio=1) +
+  sites_cols_fill +
+  sites_cols_color +
+  facet_wrap(~ site, ncol = 4) +
+  stat_fit_glance(method = 'lm', 
+                  geom = 'text', 
+                  color="black", 
+                  label.x = 2.35, 
+                  label.y = 1,
+                  method.args = list(formula = y ~ x),
+                  mapping = aes(label = sprintf('r^2~"="~%.3f~~italic(P)~"="~%.2g',
+                                                stat(r.squared), stat(p.value))), parse = TRUE) +
+  geom_smooth(method = "lm", color="black", size = 0.5, formula = y ~ x, se = TRUE)
+
+### combine the panels
+
+Figure_4 <- plot_grid(
+  Figure_4_A,
+  Figure_4_B,
+  align = 'vh',
+  labels = c("A", "B"),
+  hjust = -1,
+  nrow = 1
+)
+
+Figure_4 <- ggarrange(ggarrange(Figure_4_A, Figure_4_B, ncol = 2, nrow=1, labels = c("A","B")), ggarrange(Figure_4_C, labels = "C"), nrow=2)
+
+ggsave("./figures/Figure_4.pdf", Figure_4, units=c("in"), height = 8, width = 7)
+
+```
+
+```{r, echo=FALSE}
+Figure_4
+```
+
+### Figure 5
+
+```{r Figure 5, include=FALSE, echo=FALSE}
+# Figure 5
+## Bar plot of enriched BGCs by cluster_type and faceted by site
+
+Figure_5 <- ggplot() +
+  geom_bar(data=enriched_bgcs_by_site, aes(y=Count, fill=cluster_type, x=cluster_type), stat = "identity", color="black", size=0.25) +
+  xlab("BGC Type") +
+  ylab("Enriched BGC Count") +
+  adt_bgc_gg_theme +
+  clusters_fill_scale +
+  coord_flip() +
+  scale_x_discrete(limits = rev(c("RiPP", "nrps", "terpene", "arylpolyene", "pks", "siderophore", "hserlactone", "ectoine", "phosphonate", "butyrolactone", "hybrid", "other")),
+				   labels = rev(c("RiPP", "NRPS", "Terpene", "Aryl Polyene", "PKS", "Siderophore", "HSL", "Ectoine", "Phosphonate", "Butyrolactone", "Hybrid", "Other"))
+  ) +
+  facet_wrap(~ enriched_site, ncol = 4) +
+  theme(panel.spacing = unit(1, "lines"))
+
+ggsave("./figures/Figure_5.pdf", Figure_5, units=c("in"), height = 3, width = 8)
+```
+
+```{r, echo=FALSE}
+Figure_5
+```
+
+##  Supplemental Figures
+
+### Figure S1
+
+```{r Figure S1, include=FALSE, echo=FALSE}
+# Figure S1
+## histogram of adenylation and ketosynthase domains for NRPS and T1PKS BGCs, respectively
+### cleaned up in Inkscape to add separate labels for adenylation and ketosynthase domains
+
+Figure_S1 <- ggplot() +
+  geom_histogram(data=eHOMD_domain_counts_filtered, aes(x=count, fill=genus_type), position = "stack", binwidth = 1) +
+  ylab("BGC Count") +
+  xlab("Domain Count") +
+  adt_bgc_gg_theme +
+  genus_fill_scale +
+  facet_grid(cols=vars(type.x))
+
+ggsave("./figures/Figure_S1.pdf", Figure_S1, units = c("in"), height = 4, width = 6)
+
+```
+
+```{r, echo=FALSE}
+Figure_S1
+```
+
+### Figure S2
+
+```{r Figure S2, include=FALSE, echo=FALSE}
+# Figure S2
+## jitter plot of the log10 relative abundance of select genera in the buccal mucosa, tongue dorsum, external naris, and gingiva
+### cleaned up in Inkscape to italicized the facet labels
+
+Figure_S2 <- ggplot() +
+  geom_jitter(data = hmp_adt_metaphlan_genus_subset, aes(y=log_ra, x=site, fill=site), shape = 21, col="black", stroke=0.1) +
+  xlab("Site") +
+  ylab(expression(paste(log[10], " Relative Abundance"))) +
+  adt_bgc_gg_theme +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        legend.position = "bottom") +
+  sites_cols_fill + 
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+  facet_wrap(~genus_type, ncol = 6) + 
+  stat_summary(data = hmp_adt_metaphlan_genus_subset, aes(y=log_ra, x=site, fill=site), fun = "median", fun.min = "median", fun.max= "median", size=0.3, geom = "crossbar", color = "black", show.legend = FALSE)
+
+ggsave("./figures/Figure_S2.pdf", Figure_S2, units=c("in"), width=8, height=5)
+
+```
+
+```{r, echo=FALSE}
+Figure_S2
+```
+
+### Figure S3
+
+```{r Figure S3, include=FALSE, echo=FALSE}
+# Figure S3
+## box plots of evenness and richness for species and BGCs
+
+### Panel A
+#### box plot of species richness by site
+
+Figure_S3_A <- ggplot() +
+  geom_boxplot(data = shannon, aes(x = site, y = species_S, fill=site), outlier.shape = 21, col="black", outlier.stroke=0.1) +
+  ylab("S (species)") +
+  adt_bgc_gg_theme +
+  theme(axis.text.x = element_text(angle=45, hjust=1),
+        axis.title.x = element_blank()) +
+  sites_cols_fill +
+  sites_cols_color +
+  geom_text(data = compare_species_S$stats, aes(x = site, y = species_S, label = Letter)) +
+  geom_hline(yintercept = median(shannon$species_S), linetype="dashed", size=0.25)
+
+### Panel B
+#### box plot of BGC richness by site
+
+Figure_S3_B <- ggplot() +
+  geom_boxplot(data = shannon, aes(x = site, y = bgc_S, fill=site), outlier.shape = 21, col="black", outlier.stroke=0.1) +
+  ylab("S (BGC)") +
+  adt_bgc_gg_theme +
+  theme(axis.text.x = element_text(angle=45, hjust=1),
+        axis.title.x = element_blank()) +
+  sites_cols_fill +
+  sites_cols_color +
+  geom_text(data = compare_bgc_S$stats, aes(x = site, y = bgc_S, label = Letter)) +
+  geom_hline(yintercept = median(shannon$bgc_S), linetype="dashed", size=0.25)
+
+### Panel C
+#### box plot of species evenness by site
+
+Figure_S3_C <- ggplot() +
+  geom_boxplot(data = shannon, aes(x = site, y = species_E, fill=site), outlier.shape = 21, col="black", outlier.stroke=0.1) +
+  ylab(expression(paste(E[H], " (species)"))) +
+  adt_bgc_gg_theme +
+  theme(axis.text.x = element_text(angle=45, hjust=1),
+        axis.title.x = element_blank()) +
+  sites_cols_fill +
+  sites_cols_color +
+  geom_text(data = compare_species_E$stats, aes(x = site, y = species_E, label = Letter)) +
+  geom_hline(yintercept = median(shannon$species_E), linetype="dashed", size=0.25)
+
+### Panel D
+#### box plot of BGC evenness by site
+
+Figure_S3_D <- ggplot() +
+  geom_boxplot(data = shannon, aes(x = site, y = bgc_E, fill=site), outlier.shape = 21, col="black", outlier.stroke=0.1) +
+  ylab(expression(paste(E[H], " (BGC)"))) +
+  adt_bgc_gg_theme +
+  theme(axis.text.x = element_text(angle=45, hjust=1),
+        axis.title.x = element_blank()) +
+  sites_cols_fill +
+  sites_cols_color +
+  geom_text(data = compare_bgc_E$stats, aes(x = site, y = bgc_E, label = Letter)) +
+  geom_hline(yintercept = median(shannon$bgc_E), linetype="dashed", size=0.25)
+
+## combine the panels
+
+Figure_S3 <- plot_grid(
+  Figure_S3_A,
+  Figure_S3_B,
+  Figure_S3_C,
+  Figure_S3_D,
+  align = 'vh',
+  labels = c("A", "B", "C", "D"),
+  hjust = -1,
+  nrow = 2
+ )
+
+ggsave("./figures/Figure_S3.pdf", Figure_S3, width = 8, height = 8, units=c("in"))
+```
+
+```{r, echo=FALSE}
+Figure_S3
+```
+
+### Figure S4
+
+```{r Figure S4, include=FALSE, echo=FALSE}
+# Figure S4
+## volcano plots of differentially abundant BGCs by site
+
+### Panel A
+
+Figure_S4_A <- volcano_plot_site(dds_buccal_mucosa, "Buccal Mucosa") + 
+  adt_bgc_gg_theme +
+  theme(plot.title = element_text(color = "black", hjust = 0.5)) +
+  geom_hline(yintercept = max_intercept(dds_buccal_mucosa), linetype = "dashed", size=0.25)
+
+### Panel B
+
+Figure_S4_B <- volcano_plot_site(dds_tongue, "Dorsum of Tongue") + 
+  adt_bgc_gg_theme +
+  theme(plot.title = element_text(color = "black", hjust = 0.5)) +
+  geom_hline(yintercept = max_intercept(dds_tongue), linetype = "dashed", size=0.25)
+
+### Panel C
+
+Figure_S4_C <- volcano_plot_site(dds_external_naris, "External Naris") + 
+  adt_bgc_gg_theme +
+  theme(plot.title = element_text(color = "black", hjust = 0.5)) +
+  geom_hline(yintercept = max_intercept(dds_external_naris), linetype = "dashed", size=0.25)
+
+### Panel D
+
+Figure_S4_D <- volcano_plot_site(dds_gingiva, "Gingiva") + 
+  adt_bgc_gg_theme +
+  theme(plot.title = element_text(color = "black", hjust = 0.5)) +
+  geom_hline(yintercept = max_intercept(dds_gingiva), linetype = "dashed", size=0.25)
+
+## extract a legend that is laid out horizontally
+legend_b <- get_legend(
+  Figure_S4_A + 
+    guides(color = guide_legend(nrow = 1)) +
+    theme(legend.position = "bottom"))
+
+## generate the 2x2 volcano plot figure
+Figure_S4 <- plot_grid(
+  Figure_S4_A,
+  Figure_S4_B,
+  Figure_S4_C,
+  Figure_S4_D,
+  align = 'vh',
+  labels = c("A", "B", "C", "D"),
+  hjust = -1,
+  nrow = 2
+ )
+ 
+Figure_S4 <- plot_grid(Figure_S4, legend_b, nrow = 2, rel_heights = c(3, .3))
+
+ggsave("./figures/Figure_S4.pdf", Figure_S4, width = 8, height = 8, units=c("in"))
+```
+
+
+```{r, echo=FALSE}
+Figure_S4
+```
+
+### Figure S7
+
+```{r Figure S7, include=FALSE, echo=FALSE}
+# Figure S7
+## Panel A
+### ANCOM plot
+
+Figure_S7_A <- ggplot() +
+  geom_point(data=ancom_out, aes(x=x, y=y, fill=site), shape = 21, col="black", stroke=0.1) +
+  ylab(bquote(italic(W)~-statistic)) +
+  xlab("CLR Mean Difference") +
+  adt_bgc_gg_theme +
+  xlim(-5,5) +
+  geom_hline(yintercept = 0.9*max(ancom_out$y), linetype="dashed") +
+  geom_vline(xintercept = 0.5, linetype="dashed") +
+  geom_vline(xintercept = -0.5, linetype="dashed") +
+  sites_cols_fill + 
+  geom_label_repel(data=ancom_out_labels, aes(x=x, y=y, label = strep_name),
+                   segment.color = 'grey50',
+                   force=10,
+                   size=2,
+                   min.segment.length = unit(0, 'lines'),
+                   fill = alpha(c("white"),0.85),
+                   fontface = "italic")
+
+## Panel B
+### relative abundance of significantly different streptococci
+
+Figure_S7_B <- ggplot() +
+  geom_jitter(data = metaphlan_streptococcus, aes(y=log_ra, x=site, fill=site), shape = 21, col="black", stroke=0.1) +
+  xlab("Site") +
+  ylab((expression(paste(log[10], " Relative Abundance")))) +
+  adt_bgc_gg_theme +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        strip.text.x = element_text(size = 8, face = "italic"),
+        legend.position = "bottom")  +
+  sites_cols_fill + 
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 5)) +
+  facet_wrap(~ species_type, ncol = 5) +
+  stat_summary(data = metaphlan_streptococcus, aes(y=log_ra, x=site, fill=site), fun = "median", fun.min = "median", fun.max= "median", size= 0.3, geom = "crossbar", color="black", show.legend = FALSE)
+
+## combine the panels together
+
+Figure_S7 <- plot_grid(
+  Figure_S7_A,
+  Figure_S7_B,
+  labels = c("A", "B"),
+  nrow = 2
+)
+
+ggsave("./figures/Figure_S7.pdf", Figure_S7, units=c("in"), height=10, width=8)
+
+```
+
+```{r, echo=FALSE}
+Figure_S7
+```
