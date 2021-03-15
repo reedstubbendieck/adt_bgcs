@@ -107,6 +107,7 @@ The following R packages are required for analysis and figure generation:
 5. Run fastp and kallisto to process raw reads and pseudoalign to biosynthetic ORFs
 	
 	Change thread_num to run
+	
 	Note: these scripts will remove the raw read files when done
 
 	For .tar.bz2 files:
@@ -126,6 +127,7 @@ The following R packages are required for analysis and figure generation:
 1. Use MetaPhlAn to characterize the composition of ADT microbiomes
 	
 	Change thread_num and specify (g)enus or (s)pecies with single letter flag to run
+	
 	Note: these scripts will remove the raw read files when done
 
 	For .tar.bz2 files:
