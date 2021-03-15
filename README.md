@@ -68,6 +68,7 @@ The following R packages are required for analysis and figure generation:
 	    python3 ./scripts/python/fasta_rename.py/ ./rawData/ALL_genomes.fna ./derivedData/all_genomes_renamed_contigs.fna
 
 3. Run antiSMASH
+	
 	Change thread_num to run
 
 		mkdir ./derivedData/eHOMD_as4_out/
@@ -104,6 +105,7 @@ The following R packages are required for analysis and figure generation:
 	Note: SRS043422.tar.bz2 has an error in the sequencing file that required manual correction. 
 
 5. Run fastp and kallisto to process raw reads and pseudoalign to biosynthetic ORFs
+	
 	Change thread_num to run
 	Note: these scripts will remove the raw read files when done
 
@@ -122,6 +124,7 @@ The following R packages are required for analysis and figure generation:
 ### Running MetaPhlAn
 
 1. Use MetaPhlAn to characterize the composition of ADT microbiomes
+	
 	Change thread_num and specify (g)enus or (s)pecies with single letter flag to run
 	Note: these scripts will remove the raw read files when done
 
@@ -174,11 +177,13 @@ The following R packages are required for analysis and figure generation:
 1. Download oral <i>Streptococcus</i> genomes from GenBank using preferred method (see rawData/streptococcus_genomes_table.tsv for the list used in this study) into derivedData/streptococcus_genomes/
 
 2. Run antiSMASH on oral <i>Streptococcus</i> genomes
+
 	Change thread_num to run
 	
 		antismash -c thread_num --taxon bacteria --clusterblast --knownclusterblast --smcogs --outputfoldername ./derivedData/streptococcus_genomes_antismash_output/ ./derivedData/streptococcus_genomes/
 
 3. Run BiG-SCAPE on oral <i>Streptococcus</i> genomes
+
 	Change thread_num to run
 	
 		python3 /path/to/bigscape.py --pfam_dir /path/to/pfam/databases/ -c thread_num --mibig --include_singletons --mix --hybrids-off --verbose -i ./derivedData/streptococcus_genomes_antismash_output/ -o ./derivedData/streptococcus_bigscape/
