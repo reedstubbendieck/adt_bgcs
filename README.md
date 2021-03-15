@@ -82,6 +82,7 @@ The following R packages are required for analysis and figure generation:
 ### Running kallisto
 
 1. Convert the antiSMASH GenBank-formatted output to .faa format and identify non-biosynthethic ORFs in pfam_exclude.txt for removal
+	
 	Change /path/to/Pfam-A.hmm to run
 	
 	    python3 ./scripts/python/as_gbk_convert.py ./derivedData/eHOMD_as4_out/ ./rawData/pfam_exclude.txt /path/to/Pfam-A.hmm
