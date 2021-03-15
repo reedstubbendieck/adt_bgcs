@@ -21,7 +21,7 @@ The raw metagenome sequencing reads used in this study were accessed from the NI
 
 ## Derived Datasets
 
-The derived datasets can be downloaded from FigShare [here](INSERT LINK).
+The derived datasets can be downloaded from FigShare [here](https://doi.org/10.6084/m9.figshare.14217326).
 
 ## Prerequisites
 
