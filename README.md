@@ -183,7 +183,7 @@ The following R packages are required for analysis and figure generation:
 
 	Change thread_num to run
 	
-		antismash -c thread_num --taxon bacteria --clusterblast --knownclusterblast --smcogs --outputfolder ./derivedData/streptococcus_genomes_antismash_output/ ./derivedData/streptococcus_genomes/
+		for f in ./derivedData/streptococcus_genomes/; do antismash -c thread_num --taxon bacteria --clusterblast --knownclusterblast --smcogs --outputfolder ./derivedData/streptococcus_genomes_antismash_output/ $f; done
 
 3. Run BiG-SCAPE on oral <i>Streptococcus</i> genomes
 
