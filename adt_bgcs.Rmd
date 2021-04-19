@@ -978,7 +978,7 @@ dat_order <- c(12,4,11,7,9,6,3,2,1,5,10,8)
 dat$middle <- rev(dat_median[dat_order])
 
 Figure_1_C <- ggplot() +
-  geom_jitter(data = eHOMD_BGCs_by_strain, aes(y=Count, x=genus_type, fill=genus_type), shape = 21, col="black", stroke=0.1, height = 0.1, size=1) +
+  geom_jitter(data = eHOMD_BGCs_by_strain, aes(y=Count, x=genus_type, fill=genus_type), shape = 21, col="black", stroke=0.1, height = 0.1, size=1.5) +
   geom_segment(data=dat, aes(x=xmin, xend=xmax, y=middle, yend=middle), color="black", size=0.5) +
   xlab("Genus") +
   ylab("BGC Count/Genome") +
@@ -992,7 +992,7 @@ Figure_1_C <- ggplot() +
 ### jitter plot of BGC Count/Genome vs. genome size
 
 Figure_1_D <- ggplot() +
-  geom_jitter(data=eHOMD_genome_info, aes(y=Size_bp, x=count, fill=genus_type), shape = 21, col="black", stroke=0.1, width = 0.25, size=1) +
+  geom_jitter(data=eHOMD_genome_info, aes(y=Size_bp, x=count, fill=genus_type), shape = 21, col="black", stroke=0.1, width = 0.25, size=1.5) +
   ylab("Genome Size (Mb)") +
   xlab("BGC Count/Genome") +
   adt_bgc_gg_theme +
