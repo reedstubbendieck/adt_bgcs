@@ -1,6 +1,6 @@
 ---
 title: "adt_bgcs"
-author: "Reed M. Stubbendieck & Cameron R. Currie"
+author: "Reed M. Stubbendieck, Susan E. Zelasko, Nasia Safdar, & Cameron R. Currie"
 
 output:
   html_document:
@@ -42,8 +42,14 @@ source("./scripts/r/ancom_v2.1.R")
 
 ## rawData
 
-### genome info
+### eHOMD infomation
+
+#### genome infomation
 eHOMD_genome_info <- read_delim("./rawData/SEQFID_info.txt", 
+                          "\t", escape_double = FALSE, trim_ws = TRUE)
+
+#### habitat information
+eHOMD_habitat_info <- read_delim("./rawData/SEQFID_habitat.tsv", 
                           "\t", escape_double = FALSE, trim_ws = TRUE)
 
 ### hmp manifest
@@ -53,6 +59,11 @@ hmp_adt_manifest <- read_delim("./rawData/hmp_adt_manifest.tsv",
 ### hmp metadata
 hmp_adt_metadata <- read_delim("./rawData/hmp_adt_metadata.tsv", 
     "\t", escape_double = FALSE, trim_ws = TRUE)
+
+
+### bioactivity data
+actinomyces_bioassay_data <- read_delim("rawData/actinomyces_bioassays_anaerobic.tsv", 
+                                                  "\t", escape_double = FALSE, trim_ws = TRUE)
 
 ## derivedData
 
@@ -113,6 +124,11 @@ genus_cols_assigned <- setNames(c("#A6CEE3","#1F78B4","#B2DF8A","#33A02C","#FB9A
 								)
 genus_fill_scale <- scale_fill_manual(name = "genus_type", values = genus_cols_assigned)
 
+## generate color scheme for ADT vs. other for eHOMD genomes
+reference_cols_assigned <- setNames(c("#EEA47F", "#00539C"),
+                                    c("ADT", "Environment"))
+reference_cols_fill <- scale_fill_manual(name = "source", values = reference_cols_assigned)
+
 ## generate color scheme for ADT sites
 
 sites_cols_assigned <- setNames(c("#7FC97F","#A9B7B7","#D3B4BA","#FDC086","#FEEA92","#386CB0","#B2258F","#DF1F5C","#BF5B17", "#999999"),
@@ -135,23 +151,58 @@ colnames(meta_table) <- c("file_id", "sample_id", "site")
 # merge the cluster SEQFIDs onto the cluster info to associate each cluster with its genome
 eHOMD_BGCs <- left_join(eHOMD_cluster_SEQFID, eHOMD_cluster_info, by="cluster")
 
+## add the reference information to eHOMD_habitat_info
+eHOMD_habitat_info <- eHOMD_habitat_info %>%
+  mutate(source = case_when(habitat == "Vaginal" ~ "Environment",
+                               habitat == "NonOralRef" ~ "Environment",
+                               habitat == "Unassigned" ~ "Environment",
+                               habitat == "Skin" ~ "Environment",
+                               TRUE ~ "ADT"
+  ))
+
+# merge the cluster SEQFIDs with the habitat information
+eHOMD_BGCs <- left_join(eHOMD_BGCs, eHOMD_habitat_info, by = "SEQFID")
+
 eHOMD_BGCs <- eHOMD_BGCs %>%
   # filter out poor quality clusters identified by subsequent analyses
-  filter(!(cluster == "cluster035" | cluster == "cluster666" | cluster == "cluster1400")) %>%
-  # mutate hybrid clusters denoted by a hyphen into their own cluster type
-  mutate(type = ifelse(grepl('-',type), "hybrid", type)) %>%
+  filter(!(cluster == "cluster035" | cluster == "cluster666" | cluster == "cluster1400" | cluster == "cluster1912")) %>%
   # and a new column for genus type based on the 11 focal genera in study
-  mutate(genus_type = 
-    ifelse(
-    genus == "Streptococcus" | genus == "Corynebacterium" | genus == "Staphylococcus" | genus == "Cutibacterium" | genus == "Capnocytophaga" | genus == "Neisseria" | genus == "Fusobacterium" | genus == "Rothia" | genus == "Actinomyces" | genus == "Aggregatibacter" | genus == "Prevotella", genus, "Other"
-  )) %>%
-  # add a new column for cluster_type and collapse subtypes into cluster_type
-  mutate(cluster_type = ifelse(
-    type == "bacteriocin" | type == "sactipeptide" | type == "thiopeptide" | type == "lantipeptide" | type == "lassopeptide" | type == "microcin" | type == "cyanobactin" | type == "linaridin" | type == "proteusin" | type == "glycocin", "RiPP", 
-    ifelse(type == "t1pks" | type == "t2pks" | type == "t3pks" | type == "transatpks" | type == "resorcinol" | type == "otherks", "pks", 
-    ifelse(type == "ladderane" | type == "acyl_amino_acids" | type == "blactam" | type == "phenazine", "other", type))
-    )) %>%
-  select(cluster, type, cluster_type, contig_edge, size, SEQFID, genus_type, genus, species, strain)
+  mutate(genus_type = case_when(genus == "Actinomyces" ~ "Actinomyces",
+                                genus == "Aggregatibacter" ~ "Aggregatibacter",
+                                genus == "Capnocytophaga" ~ "Capnocytophaga",
+                                genus == "Corynebacterium" ~ "Corynebacterium",
+                                genus == "Cutibacterium" ~ "Cutibacterium",
+                                genus == "Fusobacterium" ~ "Fusobacterium",
+                                genus == "Neisseria" ~ "Neisseria",
+                                genus == "Prevotella" ~ "Prevotella",
+                                genus == "Rothia" ~ "Rothia",
+                                genus == "Staphylococcus" ~ "Staphylococcus",
+                                genus == "Streptococcus" ~ "Streptococcus",
+                                TRUE ~ "Other")) %>%
+  mutate(cluster_type = case_when(type == "bacteriocin" ~ "RiPP",
+                                   type == "cyanobactin" ~ "RiPP",
+                                   type == "glycocin" ~ "RiPP",
+                                   type == "lantipeptide" ~ "RiPP",
+                                   type == "lassopeptide" ~ "RiPP",
+                                   type == "linaridin" ~ "RiPP",
+                                   type == "microcin" ~ "RiPP",
+                                   type == "proteusin" ~ "RiPP",
+                                   type == "sactipeptide" ~ "RiPP",
+                                   type == "thiopeptide" ~ "RiPP",
+                                   type == "t1pks" ~ "pks",
+                                   type == "t2pks" ~ "pks",
+                                   type == "t3pks" ~ "pks",
+                                   type == "otherks" ~ "pks",
+                                   type == "resorcinol" ~ "pks",
+                                   type == "transatpks" ~ "pks",
+                                   type == "acyl_amino_acids" ~ "other",
+                                   type == "blactam" ~ "other",
+                                   type == "ladderane" ~ "other",
+                                   type == "phenazine" ~ "other",
+                                   TRUE ~ type)) %>%
+  # mutate hybrid clusters denoted by a hyphen into their own cluster type
+  mutate(cluster_type = ifelse(grepl('-',cluster_type), "hybrid", cluster_type)) %>%
+  select(cluster, type, cluster_type, contig_edge, size, SEQFID, genus_type, genus, species, strain, habitat, source)
 
 # select a subset of genomes that have no clusters on contig edges
 eHOMD_BGCs_subset <- eHOMD_BGCs %>%
@@ -174,7 +225,7 @@ eHOMD_BGCS_by_genus <- eHOMD_BGCs %>%
   
 # summarize BGC counts by genome
 eHOMD_BGCs_by_strain <- eHOMD_BGCs_subset %>%
-  group_by(genus, species, strain, genus_type) %>%
+  group_by(genus, species, strain, genus_type, habitat, source) %>%
   summarize(Count = n())
 
 # add BGC counts to the eHOMD_genome_info
@@ -194,9 +245,12 @@ eHOMD_genome_info <- left_join(eHOMD_genome_info, eHOMD_BGCs_by_genome, by="SEQF
 ## add genus_type to eHOMD_genome_info
 eHOMD_genome_info <- left_join(eHOMD_genome_info, SEQFID_meta, by="SEQFID")
 
+## add habitat to eHOMD_genome_info
+eHOMD_genome_info <- left_join(eHOMD_genome_info, eHOMD_habitat_info, by="SEQFID")
+
 ## select the relevant columns and convert bp to Mbp
 eHOMD_genome_info <- eHOMD_genome_info %>%
-  select(SEQFID, Contigs, Size_bp, count, genus_type) %>%
+  select(SEQFID, Contigs, Size_bp, count, genus_type, source) %>%
   mutate(Size_bp = Size_bp/10^6) %>%
   # filter to only select genomes >1 Mbp
   filter(Size_bp >= 1)
@@ -218,7 +272,6 @@ tau_annotation_label <- (paste0("\u03C4", "=", round(genome_size_bgc_tau$estimat
 # remove intermediary objects that are no longer needed for subsequent analysis or figure generation
 rm(eHOMD_BGCs_by_genome)
 rm(SEQFID_meta)
-
 ```
 
 ```{r NRPS and T1PKS domains, echo=FALSE, include=FALSE}
@@ -243,9 +296,6 @@ eHOMD_domain_counts_filtered <- left_join(eHOMD_domain_counts_filtered, eHOMD_BG
 # set histogram order
 eHOMD_domain_counts_filtered$genus_type <- factor(eHOMD_domain_counts_filtered$genus_type, 
                                                   levels = c("Actinomyces", "Corynebacterium", "Cutibacterium", "Prevotella", "Rothia", "Staphylococcus", "Streptococcus", "Other"))
-
-# remove intermediary objects that are no longer needed for subsequent analysis or figure generation
-rm(eHOMD_pks_nrps_cluster_info)
 ```
 
 ```{r kallisto table processing, include=FALSE, echo=FALSE}
@@ -257,7 +307,7 @@ hmp_adt_kallisto_counts <- left_join(hmp_adt_kallisto_counts, meta_table, by="fi
 hmp_adt_kallisto_counts <- hmp_adt_kallisto_counts %>%
   # remove clusters that were never detected in the dataset
   group_by(cluster) %>%
-  filter(sum(est_counts) >=1) %>%
+  filter(sum(est_counts) >= 1) %>%
   ungroup() %>%
   # add 1 pseudocount to the remaining clusters
   mutate(est_counts = est_counts+1) %>%
@@ -308,19 +358,20 @@ colnames(clusters_meta) <- c("cluster")
 #### add cluster_type and genus_type to the annotation
 clusters_meta <- left_join(clusters_meta, eHOMD_BGCs)
 clusters_meta <- clusters_meta %>%
-  select(cluster_type, genus_type)
+  select(cluster_type, genus_type, source)
 clusters_meta <- as.data.frame(clusters_meta)
-colnames(clusters_meta) <- c("Type", "Genus")
+colnames(clusters_meta) <- c("Type", "Genus", "Source")
 
 ##### reorder the annotations
-clusters_meta <- clusters_meta[,c(2,1)]
+clusters_meta <- clusters_meta[,c(2,1,3)]
 
 ##### generate the complexHeatmap row annotation
 hb <- HeatmapAnnotation(df = clusters_meta,
                        show_legend = FALSE, # switch
                        which = "row",
                        col = list(Type = cluster_cols_assigned,
-                                  Genus = genus_cols_assigned
+                                  Genus = genus_cols_assigned,
+                                  Source = reference_cols_assigned
                                   ))
 
 #### for columns
@@ -420,6 +471,34 @@ rm(cluster_counts_subset)
 rm(pre_bgc_count_matrix)
 rm(pre_bgc_count_matrix_NMDS)
 rm(sites_meta)
+```
+
+```{r adt vs. environmental counts, include=FALSe, echo=FALSE}
+# count the number of reads that mapped to ADT vs. environmental BGCs
+bgc_read_counts <- hmp_adt_kallisto_counts %>%
+  group_by(sample_id, source) %>%
+  mutate(count_sum = sum(normalized_counts)) %>%
+  mutate(count_sum_norm = count_sum/10^6) %>%
+  dplyr::select(sample_id, source, count_sum, count_sum_norm) %>%
+  distinct() %>%
+  ungroup()
+
+# run the sign test to compare the number of pseudoaligned reads for ADT vs. environmental BGCs
+bgc_read_counts_sign_test <- bgc_read_counts %>%
+  sign_test(count_sum_norm ~ source) %>%
+  add_significance() %>%
+  add_xy_position(x = "source")
+
+# calculate the percentage of reads in each sample that mapped to environmental BGCs
+bgc_read_sum_counts <- bgc_read_counts %>%
+  group_by(sample_id) %>%
+  mutate(total_counts = sum(count_sum)) %>%
+  ungroup %>%
+  mutate(percent = count_sum/total_counts*100) %>%
+  filter(!source == "ADT")
+
+bgc_read_sum_counts <- left_join(bgc_read_sum_counts, meta_table, by="sample_id")
+
 ```
 
 ```{r metaphlan genus table processing, include=FALSE, echo=FALSE}
@@ -673,6 +752,15 @@ compare_bgc_S <- compare_diversity(bgc_S)
 compare_species_E <- compare_diversity(species_E)
 compare_bgc_E <- compare_diversity(bgc_E)
 
+# compare the diversity indices between bacterial communities and BGCs
+shannon_test <- shannon %>%
+  select(sample_id, species_H, bgc_H) %>%
+  gather("diversity_metric", "value", -sample_id)
+
+stat_test_shannon <- shannon_test %>%
+  sign_test(value ~ diversity_metric) %>%
+  add_significance() %>%
+  add_xy_position(x = "source")
 ```
 
 ```{r identify site-specific BGCs, include=FALSE, echo=FALSE}
@@ -914,6 +1002,19 @@ rm(prepro)
 rm(pseudocount_streptococcus)
 ```
 
+```{r Bioassay data, include=FALSE, echo=FALSE}
+actinomyces_bioassay_data <- actinomyces_bioassay_data %>%
+  group_by(strain, target) %>%
+  summarize(mean_score = mean(score))
+
+actinomyces_bioassay_data$target <- factor(actinomyces_bioassay_data$target, 
+                                                        levels=rev(c("A. baumannii PID42", "E. coli K-12 MG1665", 
+                                                                     "P. aeruginosa 27873", "M. luteus PID19", 
+																	                                   "R. corynebacteroides PID5", "S. aureus PID40")))
+
+```
+
+
 ```{r gg_theme, include=FALSE, echo=FALSE}
 
 # standard theme for all ggplot objects
@@ -930,6 +1031,8 @@ adt_bgc_gg_theme <- theme_classic() +
         legend.title=element_blank(),
   )
 ```
+
+
 
 # Figures
 
@@ -950,7 +1053,7 @@ Figure_1_A <- ggplot() +
   clusters_fill_scale +
   coord_flip() +
   scale_x_discrete(limits=rev(c("RiPP", "nrps", "terpene", "arylpolyene", "pks", "siderophore", "hserlactone", "ectoine", "phosphonate", "butyrolactone", "hybrid", "other")),
-                              labels=rev(c("RiPP", "NRPS", "Terpene", "Aryl Polyene", "PKS", "Siderophore", "HSL", "Ectoine", "Phosphonate", "Butyrolactone", "Hybrid", "Other")))
+                              labels=rev(c("RiPP/Bacteriocin", "NRPS", "Terpene", "Aryl Polyene", "PKS", "Siderophore", "HSL", "Ectoine", "Phosphonate", "Butyrolactone", "Hybrid", "Other")))
 
 ## Panel B
 ### bar graph of total BGC counts by genus predicted in eHOMD genomes
@@ -978,7 +1081,8 @@ dat_order <- c(12,4,11,7,9,6,3,2,1,5,10,8)
 dat$middle <- rev(dat_median[dat_order])
 
 Figure_1_C <- ggplot() +
-  geom_jitter(data = eHOMD_BGCs_by_strain, aes(y=Count, x=genus_type, fill=genus_type), shape = 21, col="black", stroke=0.1, height = 0.1, size=1.5) +
+  geom_jitter(data = eHOMD_BGCs_by_strain, aes(y=Count, x=genus_type, fill=genus_type, shape=source), col="black", stroke=0.1, height = 0.1, size=1.5) +
+  scale_shape_manual(labels = c("ADT", "Other"), values = c(21, 23)) +
   geom_segment(data=dat, aes(x=xmin, xend=xmax, y=middle, yend=middle), color="black", size=0.5) +
   xlab("Genus") +
   ylab("BGC Count/Genome") +
@@ -992,7 +1096,8 @@ Figure_1_C <- ggplot() +
 ### jitter plot of BGC Count/Genome vs. genome size
 
 Figure_1_D <- ggplot() +
-  geom_jitter(data=eHOMD_genome_info, aes(y=Size_bp, x=count, fill=genus_type), shape = 21, col="black", stroke=0.1, width = 0.25, size=1.5) +
+  geom_jitter(data=eHOMD_genome_info, aes(y=Size_bp, x=count, fill=genus_type, shape=source), col="black", stroke=0.1, width = 0.25, size=1.5) +
+  scale_shape_manual(labels = c("ADT", "Other"), values = c(21, 23)) +
   ylab("Genome Size (Mb)") +
   xlab("BGC Count/Genome") +
   adt_bgc_gg_theme +
@@ -1194,7 +1299,7 @@ Figure_5 <- ggplot() +
   clusters_fill_scale +
   coord_flip() +
   scale_x_discrete(limits = rev(c("RiPP", "nrps", "terpene", "arylpolyene", "pks", "siderophore", "hserlactone", "ectoine", "phosphonate", "butyrolactone", "hybrid", "other")),
-				   labels = rev(c("RiPP", "NRPS", "Terpene", "Aryl Polyene", "PKS", "Siderophore", "HSL", "Ectoine", "Phosphonate", "Butyrolactone", "Hybrid", "Other"))
+				   labels = rev(c("RiPP/Bacteriocin", "NRPS", "Terpene", "Aryl Polyene", "PKS", "Siderophore", "HSL", "Ectoine", "Phosphonate", "Butyrolactone", "Hybrid", "Other"))
   ) +
   facet_wrap(~ enriched_site, ncol = 4) +
   theme(panel.spacing = unit(1, "lines"))
@@ -1205,6 +1310,25 @@ ggsave("./figures/Figure_5.pdf", Figure_5, units=c("in"), height = 3, width = 8)
 ```{r, echo=FALSE}
 Figure_5
 ```
+
+### Figure 8A
+
+```{r Figure 9A, include=FALSE, echo=FALSE}
+Figure_8A <- ggplot() +
+  geom_tile(data=actinomyces_bioassay_data, aes(x=strain, y=target, fill=mean_score)) +
+  adt_bgc_gg_theme +
+  theme(axis.title = element_blank(),
+        axis.text.x = element_text(angle = 45, hjust = 1),
+        axis.text.y = element_text(face = "italic"),
+        aspect.ratio = 1)
+
+ggsave("./figures/Figure_8A.pdf", Figure_8A, units = c("in"), height = 5, width = 5)
+```
+
+```{r}
+Figure_8A
+```
+
 
 ##  Supplemental Figures
 
@@ -1235,23 +1359,46 @@ Figure_S1
 
 ```{r Figure S2, include=FALSE, echo=FALSE}
 # Figure S2
-## jitter plot of the log10 relative abundance of select genera in the buccal mucosa, tongue dorsum, external naris, and gingiva
-### cleaned up in Inkscape to italicized the facet labels
+## Figure S2A
+### jitter plot of the pseudocounts of reads aligned to ADT vs. environmental bgcs
 
-Figure_S2 <- ggplot() +
-  geom_jitter(data = hmp_adt_metaphlan_genus_subset, aes(y=log_ra, x=site, fill=site), shape = 21, col="black", stroke=0.1) +
-  xlab("Site") +
-  ylab(expression(paste(log[10], " Relative Abundance"))) +
+Figure_S2_A <- ggplot() +
+  geom_jitter(data = bgc_read_counts, aes(x=source, y=count_sum_norm, fill = source), shape=21, stroke=0.1) +
+  stat_summary(data = bgc_read_counts, aes(x=source, y=count_sum_norm, fill = source), fun = "median", fun.min = "median", fun.max= "median", size=0.3, geom = "crossbar", color = "black", show.legend = FALSE) +
   adt_bgc_gg_theme +
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank(),
-        legend.position = "bottom") +
-  sites_cols_fill + 
-  scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
-  facet_wrap(~genus_type, ncol = 6) + 
-  stat_summary(data = hmp_adt_metaphlan_genus_subset, aes(y=log_ra, x=site, fill=site), fun = "median", fun.min = "median", fun.max= "median", size=0.3, geom = "crossbar", color = "black", show.legend = FALSE)
+  reference_cols_fill +
+  scale_x_discrete(labels = c("ADT", "Environment")) +
+  theme(axis.title.x = element_blank()) +
+  ylab(expression(paste("Pseudoaligned Read Counts (×", 10^6, ")"))) +
+  #ylab("Pseudoaligned Read Counts (10)") +
+  stat_pvalue_manual(bgc_read_counts_sign_test)
 
-ggsave("./figures/Figure_S2.pdf", Figure_S2, units=c("in"), width=8, height=5)
+## Figure S2B
+### jitter plot of percentage of reads in each sample pseudoaligned to environmental BGCs
+
+Figure_S2_B <- ggplot() +
+  geom_jitter(data=bgc_read_sum_counts, aes(y=percent, x=source, fill=site), col="black", shape=21, stroke=0.1) +
+  stat_summary(data=bgc_read_sum_counts, aes(x=source, y=percent), fun = "median", fun.min = "median", fun.max= "median", size=0.3, geom = "crossbar", color = "black", show.legend = FALSE) +
+  adt_bgc_gg_theme +
+  sites_cols_fill +
+  sites_cols_color +
+  theme(axis.title.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_blank()) +
+  ylab("Pseudoaligned to Environmental BGCS (%)")
+
+## combine the panels
+Figure_S2 <- plot_grid(
+  Figure_S2_A,
+  Figure_S2_B,
+  align = 'vh',
+  labels = c("A", "B"),
+  hjust = -1,
+  nrow = 1
+ )
+
+
+ggsave("./figures/Figure_S2.pdf", Figure_S2, units=c("in"), width=6, height=4)
 
 ```
 

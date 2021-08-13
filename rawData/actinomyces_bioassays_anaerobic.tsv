@@ -1,0 +1,145 @@
+strain	target	replicate	score
+p3-SID4074	M. luteus PID19	A	2
+p3-SID4074	R. corynebacteroides PID5	A	2
+p3-SID4074	S. aureus PID40	A	0
+p3-SID4074	A. baumannii PID42	A	1
+p3-SID4074	E. coli K-12 MG1665	A	1
+p3-SID4074	P. aeruginosa 27873	A	2
+p3-SID4074	M. luteus PID19	B	2
+p3-SID4074	R. corynebacteroides PID5	B	2
+p3-SID4074	S. aureus PID40	B	0
+p3-SID4074	A. baumannii PID42	B	0
+p3-SID4074	E. coli K-12 MG1665	B	0
+p3-SID4074	P. aeruginosa 27873	B	2
+p3-SID4074	M. luteus PID19	C	2
+p3-SID4074	R. corynebacteroides PID5	C	2
+p3-SID4074	S. aureus PID40	C	0
+p3-SID4074	A. baumannii PID42	C	0
+p3-SID4074	E. coli K-12 MG1665	C	0
+p3-SID4074	P. aeruginosa 27873	C	2
+p3-SID4076	M. luteus PID19	A	2
+p3-SID4076	R. corynebacteroides PID5	A	2
+p3-SID4076	S. aureus PID40	A	0
+p3-SID4076	A. baumannii PID42	A	2
+p3-SID4076	E. coli K-12 MG1665	A	2
+p3-SID4076	P. aeruginosa 27873	A	2
+p3-SID4076	M. luteus PID19	B	2
+p3-SID4076	R. corynebacteroides PID5	B	2
+p3-SID4076	S. aureus PID40	B	0
+p3-SID4076	A. baumannii PID42	B	2
+p3-SID4076	E. coli K-12 MG1665	B	2
+p3-SID4076	P. aeruginosa 27873	B	2
+p3-SID4076	M. luteus PID19	C	2
+p3-SID4076	R. corynebacteroides PID5	C	2
+p3-SID4076	S. aureus PID40	C	0
+p3-SID4076	A. baumannii PID42	C	2
+p3-SID4076	E. coli K-12 MG1665	C	2
+p3-SID4076	P. aeruginosa 27873	C	2
+p3-SID4082	M. luteus PID19	A	2
+p3-SID4082	R. corynebacteroides PID5	A	2
+p3-SID4082	S. aureus PID40	A	0
+p3-SID4082	A. baumannii PID42	A	0
+p3-SID4082	E. coli K-12 MG1665	A	0
+p3-SID4082	P. aeruginosa 27873	A	0
+p3-SID4082	M. luteus PID19	B	2
+p3-SID4082	R. corynebacteroides PID5	B	2
+p3-SID4082	S. aureus PID40	B	0
+p3-SID4082	A. baumannii PID42	B	0
+p3-SID4082	E. coli K-12 MG1665	B	0
+p3-SID4082	P. aeruginosa 27873	B	0
+p3-SID4082	M. luteus PID19	C	2
+p3-SID4082	R. corynebacteroides PID5	C	2
+p3-SID4082	S. aureus PID40	C	0
+p3-SID4082	A. baumannii PID42	C	0
+p3-SID4082	E. coli K-12 MG1665	C	0
+p3-SID4082	P. aeruginosa 27873	C	0
+p3-SID4086	M. luteus PID19	A	2
+p3-SID4086	R. corynebacteroides PID5	A	2
+p3-SID4086	S. aureus PID40	A	0
+p3-SID4086	A. baumannii PID42	A	0
+p3-SID4086	E. coli K-12 MG1665	A	0
+p3-SID4086	P. aeruginosa 27873	A	0
+p3-SID4086	M. luteus PID19	B	2
+p3-SID4086	R. corynebacteroides PID5	B	2
+p3-SID4086	S. aureus PID40	B	0
+p3-SID4086	A. baumannii PID42	B	0
+p3-SID4086	E. coli K-12 MG1665	B	0
+p3-SID4086	P. aeruginosa 27873	B	0
+p3-SID4086	M. luteus PID19	C	2
+p3-SID4086	R. corynebacteroides PID5	C	2
+p3-SID4086	S. aureus PID40	C	0
+p3-SID4086	A. baumannii PID42	C	0
+p3-SID4086	E. coli K-12 MG1665	C	0
+p3-SID4086	P. aeruginosa 27873	C	0
+p3-SID4100	M. luteus PID19	A	2
+p3-SID4100	R. corynebacteroides PID5	A	2
+p3-SID4100	S. aureus PID40	A	0
+p3-SID4100	A. baumannii PID42	A	0
+p3-SID4100	E. coli K-12 MG1665	A	0
+p3-SID4100	P. aeruginosa 27873	A	2
+p3-SID4100	M. luteus PID19	B	2
+p3-SID4100	R. corynebacteroides PID5	B	2
+p3-SID4100	S. aureus PID40	B	0
+p3-SID4100	A. baumannii PID42	B	0
+p3-SID4100	E. coli K-12 MG1665	B	0
+p3-SID4100	P. aeruginosa 27873	B	2
+p3-SID4100	M. luteus PID19	C	2
+p3-SID4100	R. corynebacteroides PID5	C	2
+p3-SID4100	S. aureus PID40	C	0
+p3-SID4100	A. baumannii PID42	C	0
+p3-SID4100	E. coli K-12 MG1665	C	0
+p3-SID4100	P. aeruginosa 27873	C	2
+p3-SID4111	M. luteus PID19	A	2
+p3-SID4111	R. corynebacteroides PID5	A	2
+p3-SID4111	S. aureus PID40	A	0
+p3-SID4111	A. baumannii PID42	A	0
+p3-SID4111	E. coli K-12 MG1665	A	0
+p3-SID4111	P. aeruginosa 27873	A	2
+p3-SID4111	M. luteus PID19	B	2
+p3-SID4111	R. corynebacteroides PID5	B	2
+p3-SID4111	S. aureus PID40	B	0
+p3-SID4111	A. baumannii PID42	B	0
+p3-SID4111	E. coli K-12 MG1665	B	0
+p3-SID4111	P. aeruginosa 27873	B	2
+p3-SID4111	M. luteus PID19	C	2
+p3-SID4111	R. corynebacteroides PID5	C	2
+p3-SID4111	S. aureus PID40	C	0
+p3-SID4111	A. baumannii PID42	C	0
+p3-SID4111	E. coli K-12 MG1665	C	0
+p3-SID4111	P. aeruginosa 27873	C	2
+p3-SID4123	M. luteus PID19	A	2
+p3-SID4123	R. corynebacteroides PID5	A	2
+p3-SID4123	S. aureus PID40	A	0
+p3-SID4123	A. baumannii PID42	A	2
+p3-SID4123	E. coli K-12 MG1665	A	2
+p3-SID4123	P. aeruginosa 27873	A	2
+p3-SID4123	M. luteus PID19	B	2
+p3-SID4123	R. corynebacteroides PID5	B	2
+p3-SID4123	S. aureus PID40	B	0
+p3-SID4123	A. baumannii PID42	B	2
+p3-SID4123	E. coli K-12 MG1665	B	2
+p3-SID4123	P. aeruginosa 27873	B	2
+p3-SID4123	M. luteus PID19	C	2
+p3-SID4123	R. corynebacteroides PID5	C	2
+p3-SID4123	S. aureus PID40	C	0
+p3-SID4123	A. baumannii PID42	C	1
+p3-SID4123	E. coli K-12 MG1665	C	2
+p3-SID4123	P. aeruginosa 27873	C	2
+p3-SID4130	M. luteus PID19	A	2
+p3-SID4130	R. corynebacteroides PID5	A	2
+p3-SID4130	S. aureus PID40	A	0
+p3-SID4130	A. baumannii PID42	A	1
+p3-SID4130	E. coli K-12 MG1665	A	2
+p3-SID4130	P. aeruginosa 27873	A	2
+p3-SID4130	M. luteus PID19	B	2
+p3-SID4130	R. corynebacteroides PID5	B	2
+p3-SID4130	S. aureus PID40	B	0
+p3-SID4130	A. baumannii PID42	B	1
+p3-SID4130	E. coli K-12 MG1665	B	0
+p3-SID4130	P. aeruginosa 27873	B	2
+p3-SID4130	M. luteus PID19	C	2
+p3-SID4130	R. corynebacteroides PID5	C	2
+p3-SID4130	S. aureus PID40	C	0
+p3-SID4130	A. baumannii PID42	C	0
+p3-SID4130	E. coli K-12 MG1665	C	0
+p3-SID4130	P. aeruginosa 27873	C	2

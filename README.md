@@ -1,11 +1,13 @@
 
 # Biogeography of Bacterial Communities and Specialized Metabolism in Human Aerodigestive Tract Microbiomes
 
-Reed M. Stubbendieck<sup>1</sup> & Cameron R. Currie<sup>1,2,3</sup>
+Reed M. Stubbendieck<sup>1</sup>, Susan E. Zelasko<sup>1</sup>, Nasia Safdar<sup>2,3></sup>, & Cameron R. Currie<sup>1,4,5</sup>
 
 <sup>1</sup>Department of Bacteriology, University of Wisconsin-Madison, Madison, WI 53706
-<sup>2</sup>Department of Energy Great Lakes Bioenergy Research Center, University of Wisconsin-Madison, Madison, WI 53706
-<sup>3</sup>Laboratory of Genetics, University of Wisconsin-Madison, Madison, WI 53706
+<sup>2</sup>Department of Medicine, University of Wisconsin-Madison, Madison, WI 53792
+<sup>3</sup>Department of Medicine, University of Wisconsin-Madison School of Medicine and Public Health, Madison, WI, 53792
+<sup>4</sup>Department of Energy Great Lakes Bioenergy Research Center, University of Wisconsin-Madison, Madison, WI 53706
+<sup>5</sup>Laboratory of Genetics, University of Wisconsin-Madison, Madison, WI 53706
 
 Contact: stubbendieck@wisc.edu
 
@@ -18,6 +20,8 @@ This repository contains the code necessary to replicate the results of our stud
 The raw genome sequences used in this study were accessed from the expanded Human Oral Microbiome Database ([eHOMD](http://www.ehomd.org/)) version 9.03 ([FTP link](http://www.homd.org/ftp/HOMD_prokka_genomes/fna/ALL_genomes.fna)).
 
 The raw metagenome sequencing reads used in this study were accessed from the NIH integrative Human Microbiome Project ([iHMP](https://www.hmpdacc.org/ihmp/)).
+
+Other raw data can be found in ./rawData/
 
 ## Derived Datasets
 
