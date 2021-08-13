@@ -1,7 +1,7 @@
 
 # Biogeography of Bacterial Communities and Specialized Metabolism in Human Aerodigestive Tract Microbiomes
 
-Reed M. Stubbendieck<sup>1</sup>, Susan E. Zelasko<sup>1</sup>, Nasia Safdar<sup>2,3></sup>, & Cameron R. Currie<sup>1,4,5</sup>
+Reed M. Stubbendieck<sup>1</sup>, Susan E. Zelasko<sup>1</sup>, Nasia Safdar<sup>2,3</sup>, & Cameron R. Currie<sup>1,4,5</sup>
 
 <sup>1</sup>Department of Bacteriology, University of Wisconsin-Madison, Madison, WI 53706
 <sup>2</sup>Department of Medicine, University of Wisconsin-Madison, Madison, WI 53792
