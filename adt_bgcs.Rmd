@@ -62,7 +62,10 @@ hmp_adt_metadata <- read_delim("./rawData/hmp_adt_metadata.tsv",
 
 
 ### bioactivity data
-actinomyces_bioassay_data <- read_delim("rawData/actinomyces_bioassays_anaerobic.tsv", 
+actinomyces_bioassay_anaerobic <- read_delim("rawData/actinomyces_bioassays_anaerobic.tsv", 
+                                                  "\t", escape_double = FALSE, trim_ws = TRUE)
+
+actinomyces_bioassay_aerobic <- read_delim("rawData/actinomyces_bioassays_aerobic.tsv", 
                                                   "\t", escape_double = FALSE, trim_ws = TRUE)
 
 ## derivedData
@@ -326,6 +329,7 @@ hmp_adt_kallisto_counts <- left_join(hmp_adt_kallisto_counts, eHOMD_BGCs, by="cl
 # generate a subset of the hmp_adt_kallisto_counts with lowly abundant BGCs filtered out (<=100)
 ## identify BGCs represented by >100 total_normalized_counts
 cluster_filter <- hmp_adt_kallisto_counts %>%
+  filter(source == "ADT") %>%
   group_by(cluster) %>%
   mutate(total_normalized_counts = sum(log_normalized_counts)) %>%
   select(cluster, total_normalized_counts) %>%
@@ -1003,11 +1007,23 @@ rm(pseudocount_streptococcus)
 ```
 
 ```{r Bioassay data, include=FALSE, echo=FALSE}
-actinomyces_bioassay_data <- actinomyces_bioassay_data %>%
-  group_by(strain, target) %>%
+
+aerobic_bioassy_order <- c("Aspergillus flavus - PID14", "Candida albicans K1 - PID39", "Candida sp. - PID36",
+                           "Cryptococcus neoformans H99 - PID49", "Rhizopus oryzae - PID11", "Trichosporon asahii - PID56",
+                           "Acinetobacter baumannii - PID42", "Citrobacter freundii - PID22", "Enterobacter cloacae - PID17",
+                           "Escherichia coli - PID37", "Klebsiella oxytoca - PID21", "Proteus vulgaris - PID24",
+                           "Pseudomonas aeruginosa 27873 - PID25", "Pseudomonas aeruginosa PAO1 - PID38", "Serratia marcescens 8055 - PID31",
+                           "Bacillus cereus - PID30", "Bacillus subtilis - PID29", "Enterococcus faecalis - PID41",
+                           "Micrococcus luteus - PID19", "Rhodococcus corynebacteroides - PID5", "Staphylococcus aureus - PID40",
+                           "Staphylococcus epidermidis - PID18")
+
+actinomyces_bioassay_aerobic$target <- factor(actinomyces_bioassay_aerobic$target, levels = rev(aerobic_bioassy_order))
+
+actinomyces_bioassay_anaerobic <- actinomyces_bioassay_anaerobic %>%
+  group_by(long_name, target) %>%
   summarize(mean_score = mean(score))
 
-actinomyces_bioassay_data$target <- factor(actinomyces_bioassay_data$target, 
+actinomyces_bioassay_anaerobic$target <- factor(actinomyces_bioassay_anaerobic$target, 
                                                         levels=rev(c("A. baumannii PID42", "E. coli K-12 MG1665", 
                                                                      "P. aeruginosa 27873", "M. luteus PID19", 
 																	                                   "R. corynebacteroides PID5", "S. aureus PID40")))
@@ -1313,13 +1329,12 @@ Figure_5
 
 ### Figure 8A
 
-```{r Figure 9A, include=FALSE, echo=FALSE}
+```{r Figure 8A, include=FALSE, echo=FALSE}
 Figure_8A <- ggplot() +
-  geom_tile(data=actinomyces_bioassay_data, aes(x=strain, y=target, fill=mean_score)) +
+  geom_tile(data=actinomyces_bioassay_aerobic, aes(x=long_name, y=target, fill=score)) +
   adt_bgc_gg_theme +
   theme(axis.title = element_blank(),
         axis.text.x = element_text(angle = 45, hjust = 1),
-        axis.text.y = element_text(face = "italic"),
         aspect.ratio = 1)
 
 ggsave("./figures/Figure_8A.pdf", Figure_8A, units = c("in"), height = 5, width = 5)
@@ -1327,6 +1342,24 @@ ggsave("./figures/Figure_8A.pdf", Figure_8A, units = c("in"), height = 5, width 
 
 ```{r}
 Figure_8A
+```
+
+
+### Figure 8B
+
+```{r Figure 8B, include=FALSE, echo=FALSE}
+Figure_8B <- ggplot() +
+  geom_tile(data=actinomyces_bioassay_anaerobic, aes(x=long_name, y=target, fill=mean_score)) +
+  adt_bgc_gg_theme +
+  theme(axis.title = element_blank(),
+        axis.text.x = element_text(angle = 45, hjust = 1),
+        aspect.ratio = 1)
+
+ggsave("./figures/Figure_8B.pdf", Figure_8B, units = c("in"), height = 5, width = 5)
+```
+
+```{r}
+Figure_8B
 ```
 
 

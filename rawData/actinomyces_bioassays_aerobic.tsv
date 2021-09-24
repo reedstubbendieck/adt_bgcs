@@ -1,0 +1,393 @@
+strain	host	long_name	site	target	score
+p3-SID2847	p3-HID316	p3-SID2847 (p3-HID316)	oral	Cryptococcus neoformans H99 - PID49	0
+p3-SID2847	p3-HID316	p3-SID2847 (p3-HID316)	oral	Rhodococcus corynebacteroides - PID5	3
+p3-SID2847	p3-HID316	p3-SID2847 (p3-HID316)	oral	Rhizopus oryzae - PID11	0
+p3-SID2847	p3-HID316	p3-SID2847 (p3-HID316)	oral	Candida sp. - PID36	0
+p3-SID2847	p3-HID316	p3-SID2847 (p3-HID316)	oral	Aspergillus flavus - PID14	0
+p3-SID2847	p3-HID316	p3-SID2847 (p3-HID316)	oral	Candida albicans K1 - PID39	0
+p3-SID2847	p3-HID316	p3-SID2847 (p3-HID316)	oral	Micrococcus luteus - PID19	0
+p3-SID2847	p3-HID316	p3-SID2847 (p3-HID316)	oral	Trichosporon asahii - PID56	0
+p3-SID2847	p3-HID316	p3-SID2847 (p3-HID316)	oral	Staphylococcus epidermidis - PID18	0
+p3-SID2847	p3-HID316	p3-SID2847 (p3-HID316)	oral	Enterococcus faecalis - PID41	0
+p3-SID2847	p3-HID316	p3-SID2847 (p3-HID316)	oral	Staphylococcus aureus - PID40	3
+p3-SID2847	p3-HID316	p3-SID2847 (p3-HID316)	oral	Pseudomonas aeruginosa 27873 - PID25	0
+p3-SID2847	p3-HID316	p3-SID2847 (p3-HID316)	oral	Enterobacter cloacae - PID17	0
+p3-SID2847	p3-HID316	p3-SID2847 (p3-HID316)	oral	Bacillus subtilis - PID29	0
+p3-SID2847	p3-HID316	p3-SID2847 (p3-HID316)	oral	Pseudomonas aeruginosa PAO1 - PID38	0
+p3-SID2847	p3-HID316	p3-SID2847 (p3-HID316)	oral	Klebsiella oxytoca - PID21	0
+p3-SID2847	p3-HID316	p3-SID2847 (p3-HID316)	oral	Bacillus cereus - PID30	0
+p3-SID2847	p3-HID316	p3-SID2847 (p3-HID316)	oral	Proteus vulgaris - PID24	0
+p3-SID2847	p3-HID316	p3-SID2847 (p3-HID316)	oral	Citrobacter freundii - PID22	0
+p3-SID2847	p3-HID316	p3-SID2847 (p3-HID316)	oral	Serratia marcescens 8055 - PID31	0
+p3-SID2847	p3-HID316	p3-SID2847 (p3-HID316)	oral	Escherichia coli - PID37	0
+p3-SID2847	p3-HID316	p3-SID2847 (p3-HID316)	oral	Acinetobacter baumannii - PID42	0
+p3-SID2876	p3-HID318	p3-SID2876 (p3-HID318)	oral	Cryptococcus neoformans H99 - PID49	0
+p3-SID2876	p3-HID318	p3-SID2876 (p3-HID318)	oral	Rhodococcus corynebacteroides - PID5	3
+p3-SID2876	p3-HID318	p3-SID2876 (p3-HID318)	oral	Rhizopus oryzae - PID11	0
+p3-SID2876	p3-HID318	p3-SID2876 (p3-HID318)	oral	Candida sp. - PID36	0
+p3-SID2876	p3-HID318	p3-SID2876 (p3-HID318)	oral	Aspergillus flavus - PID14	0
+p3-SID2876	p3-HID318	p3-SID2876 (p3-HID318)	oral	Candida albicans K1 - PID39	0
+p3-SID2876	p3-HID318	p3-SID2876 (p3-HID318)	oral	Micrococcus luteus - PID19	0
+p3-SID2876	p3-HID318	p3-SID2876 (p3-HID318)	oral	Trichosporon asahii - PID56	0
+p3-SID2876	p3-HID318	p3-SID2876 (p3-HID318)	oral	Staphylococcus epidermidis - PID18	0
+p3-SID2876	p3-HID318	p3-SID2876 (p3-HID318)	oral	Enterococcus faecalis - PID41	0
+p3-SID2876	p3-HID318	p3-SID2876 (p3-HID318)	oral	Staphylococcus aureus - PID40	0
+p3-SID2876	p3-HID318	p3-SID2876 (p3-HID318)	oral	Enterobacter cloacae - PID17	0
+p3-SID2876	p3-HID318	p3-SID2876 (p3-HID318)	oral	Bacillus subtilis - PID29	0
+p3-SID2876	p3-HID318	p3-SID2876 (p3-HID318)	oral	Bacillus cereus - PID30	0
+p3-SID2876	p3-HID318	p3-SID2876 (p3-HID318)	oral	Citrobacter freundii - PID22	0
+p3-SID2876	p3-HID318	p3-SID2876 (p3-HID318)	oral	Serratia marcescens 8055 - PID31	0
+p3-SID2876	p3-HID318	p3-SID2876 (p3-HID318)	oral	Escherichia coli - PID37	0
+p3-SID2876	p3-HID318	p3-SID2876 (p3-HID318)	oral	Acinetobacter baumannii - PID42	0
+p3-SID2876	p3-HID318	p3-SID2876 (p3-HID318)	oral	Pseudomonas aeruginosa 27873 - PID25	0
+p3-SID2876	p3-HID318	p3-SID2876 (p3-HID318)	oral	Pseudomonas aeruginosa PAO1 - PID38	0
+p3-SID2876	p3-HID318	p3-SID2876 (p3-HID318)	oral	Klebsiella oxytoca - PID21	0
+p3-SID2876	p3-HID318	p3-SID2876 (p3-HID318)	oral	Proteus vulgaris - PID24	0
+p3-SID3758	p3-HID384	p3-SID3758 (p3-HID384)	oral	Cryptococcus neoformans H99 - PID49	0
+p3-SID3758	p3-HID384	p3-SID3758 (p3-HID384)	oral	Rhodococcus corynebacteroides - PID5	3
+p3-SID3758	p3-HID384	p3-SID3758 (p3-HID384)	oral	Rhizopus oryzae - PID11	0
+p3-SID3758	p3-HID384	p3-SID3758 (p3-HID384)	oral	Candida sp. - PID36	0
+p3-SID3758	p3-HID384	p3-SID3758 (p3-HID384)	oral	Aspergillus flavus - PID14	0
+p3-SID3758	p3-HID384	p3-SID3758 (p3-HID384)	oral	Candida albicans K1 - PID39	0
+p3-SID3758	p3-HID384	p3-SID3758 (p3-HID384)	oral	Micrococcus luteus - PID19	3
+p3-SID3758	p3-HID384	p3-SID3758 (p3-HID384)	oral	Trichosporon asahii - PID56	0
+p3-SID3758	p3-HID384	p3-SID3758 (p3-HID384)	oral	Staphylococcus epidermidis - PID18	0
+p3-SID3758	p3-HID384	p3-SID3758 (p3-HID384)	oral	Staphylococcus aureus - PID40	0
+p3-SID3758	p3-HID384	p3-SID3758 (p3-HID384)	oral	Pseudomonas aeruginosa 27873 - PID25	0
+p3-SID3758	p3-HID384	p3-SID3758 (p3-HID384)	oral	Enterobacter cloacae - PID17	0
+p3-SID3758	p3-HID384	p3-SID3758 (p3-HID384)	oral	Bacillus subtilis - PID29	0
+p3-SID3758	p3-HID384	p3-SID3758 (p3-HID384)	oral	Pseudomonas aeruginosa PAO1 - PID38	0
+p3-SID3758	p3-HID384	p3-SID3758 (p3-HID384)	oral	Klebsiella oxytoca - PID21	0
+p3-SID3758	p3-HID384	p3-SID3758 (p3-HID384)	oral	Bacillus cereus - PID30	0
+p3-SID3758	p3-HID384	p3-SID3758 (p3-HID384)	oral	Proteus vulgaris - PID24	0
+p3-SID3758	p3-HID384	p3-SID3758 (p3-HID384)	oral	Citrobacter freundii - PID22	0
+p3-SID3758	p3-HID384	p3-SID3758 (p3-HID384)	oral	Escherichia coli - PID37	0
+p3-SID3758	p3-HID384	p3-SID3758 (p3-HID384)	oral	Acinetobacter baumannii - PID42	0
+p3-SID3758	p3-HID384	p3-SID3758 (p3-HID384)	oral	Enterococcus faecalis - PID41	0
+p3-SID3758	p3-HID384	p3-SID3758 (p3-HID384)	oral	Serratia marcescens 8055 - PID31	0
+p3-SID3925	p3-HID394	p3-SID3925 (p3-HID394)	oral	Cryptococcus neoformans H99 - PID49	0
+p3-SID3925	p3-HID394	p3-SID3925 (p3-HID394)	oral	Rhizopus oryzae - PID11	0
+p3-SID3925	p3-HID394	p3-SID3925 (p3-HID394)	oral	Candida sp. - PID36	0
+p3-SID3925	p3-HID394	p3-SID3925 (p3-HID394)	oral	Aspergillus flavus - PID14	0
+p3-SID3925	p3-HID394	p3-SID3925 (p3-HID394)	oral	Candida albicans K1 - PID39	0
+p3-SID3925	p3-HID394	p3-SID3925 (p3-HID394)	oral	Micrococcus luteus - PID19	3
+p3-SID3925	p3-HID394	p3-SID3925 (p3-HID394)	oral	Trichosporon asahii - PID56	0
+p3-SID3925	p3-HID394	p3-SID3925 (p3-HID394)	oral	Staphylococcus epidermidis - PID18	0
+p3-SID3925	p3-HID394	p3-SID3925 (p3-HID394)	oral	Enterococcus faecalis - PID41	0
+p3-SID3925	p3-HID394	p3-SID3925 (p3-HID394)	oral	Pseudomonas aeruginosa 27873 - PID25	0
+p3-SID3925	p3-HID394	p3-SID3925 (p3-HID394)	oral	Bacillus subtilis - PID29	0
+p3-SID3925	p3-HID394	p3-SID3925 (p3-HID394)	oral	Pseudomonas aeruginosa PAO1 - PID38	0
+p3-SID3925	p3-HID394	p3-SID3925 (p3-HID394)	oral	Klebsiella oxytoca - PID21	0
+p3-SID3925	p3-HID394	p3-SID3925 (p3-HID394)	oral	Bacillus cereus - PID30	0
+p3-SID3925	p3-HID394	p3-SID3925 (p3-HID394)	oral	Proteus vulgaris - PID24	0
+p3-SID3925	p3-HID394	p3-SID3925 (p3-HID394)	oral	Citrobacter freundii - PID22	0
+p3-SID3925	p3-HID394	p3-SID3925 (p3-HID394)	oral	Serratia marcescens 8055 - PID31	0
+p3-SID3925	p3-HID394	p3-SID3925 (p3-HID394)	oral	Escherichia coli - PID37	0
+p3-SID3925	p3-HID394	p3-SID3925 (p3-HID394)	oral	Acinetobacter baumannii - PID42	0
+p3-SID3925	p3-HID394	p3-SID3925 (p3-HID394)	oral	Rhodococcus corynebacteroides - PID5	3
+p3-SID3925	p3-HID394	p3-SID3925 (p3-HID394)	oral	Staphylococcus aureus - PID40	0
+p3-SID3925	p3-HID394	p3-SID3925 (p3-HID394)	oral	Enterobacter cloacae - PID17	0
+p3-SID4016	p3-HID398	p3-SID4016 (p3-HID398)	oral	Cryptococcus neoformans H99 - PID49	0
+p3-SID4016	p3-HID398	p3-SID4016 (p3-HID398)	oral	Rhodococcus corynebacteroides - PID5	3
+p3-SID4016	p3-HID398	p3-SID4016 (p3-HID398)	oral	Rhizopus oryzae - PID11	0
+p3-SID4016	p3-HID398	p3-SID4016 (p3-HID398)	oral	Candida sp. - PID36	0
+p3-SID4016	p3-HID398	p3-SID4016 (p3-HID398)	oral	Aspergillus flavus - PID14	0
+p3-SID4016	p3-HID398	p3-SID4016 (p3-HID398)	oral	Candida albicans K1 - PID39	0
+p3-SID4016	p3-HID398	p3-SID4016 (p3-HID398)	oral	Micrococcus luteus - PID19	3
+p3-SID4016	p3-HID398	p3-SID4016 (p3-HID398)	oral	Trichosporon asahii - PID56	0
+p3-SID4016	p3-HID398	p3-SID4016 (p3-HID398)	oral	Staphylococcus epidermidis - PID18	0
+p3-SID4016	p3-HID398	p3-SID4016 (p3-HID398)	oral	Enterococcus faecalis - PID41	0
+p3-SID4016	p3-HID398	p3-SID4016 (p3-HID398)	oral	Staphylococcus aureus - PID40	0
+p3-SID4016	p3-HID398	p3-SID4016 (p3-HID398)	oral	Bacillus subtilis - PID29	0
+p3-SID4016	p3-HID398	p3-SID4016 (p3-HID398)	oral	Pseudomonas aeruginosa PAO1 - PID38	0
+p3-SID4016	p3-HID398	p3-SID4016 (p3-HID398)	oral	Klebsiella oxytoca - PID21	0
+p3-SID4016	p3-HID398	p3-SID4016 (p3-HID398)	oral	Bacillus cereus - PID30	0
+p3-SID4016	p3-HID398	p3-SID4016 (p3-HID398)	oral	Proteus vulgaris - PID24	0
+p3-SID4016	p3-HID398	p3-SID4016 (p3-HID398)	oral	Citrobacter freundii - PID22	0
+p3-SID4016	p3-HID398	p3-SID4016 (p3-HID398)	oral	Serratia marcescens 8055 - PID31	0
+p3-SID4016	p3-HID398	p3-SID4016 (p3-HID398)	oral	Escherichia coli - PID37	0
+p3-SID4016	p3-HID398	p3-SID4016 (p3-HID398)	oral	Acinetobacter baumannii - PID42	0
+p3-SID4016	p3-HID398	p3-SID4016 (p3-HID398)	oral	Enterobacter cloacae - PID17	0
+p3-SID4047	p3-HID403	p3-SID4047 (p3-HID403)	buccal mucosa	Cryptococcus neoformans H99 - PID49	0
+p3-SID4047	p3-HID403	p3-SID4047 (p3-HID403)	buccal mucosa	Rhodococcus corynebacteroides - PID5	3
+p3-SID4047	p3-HID403	p3-SID4047 (p3-HID403)	buccal mucosa	Rhizopus oryzae - PID11	0
+p3-SID4047	p3-HID403	p3-SID4047 (p3-HID403)	buccal mucosa	Candida sp. - PID36	0
+p3-SID4047	p3-HID403	p3-SID4047 (p3-HID403)	buccal mucosa	Aspergillus flavus - PID14	0
+p3-SID4047	p3-HID403	p3-SID4047 (p3-HID403)	buccal mucosa	Candida albicans K1 - PID39	0
+p3-SID4047	p3-HID403	p3-SID4047 (p3-HID403)	buccal mucosa	Micrococcus luteus - PID19	3
+p3-SID4047	p3-HID403	p3-SID4047 (p3-HID403)	buccal mucosa	Trichosporon asahii - PID56	0
+p3-SID4047	p3-HID403	p3-SID4047 (p3-HID403)	buccal mucosa	Staphylococcus epidermidis - PID18	0
+p3-SID4047	p3-HID403	p3-SID4047 (p3-HID403)	buccal mucosa	Enterococcus faecalis - PID41	0
+p3-SID4047	p3-HID403	p3-SID4047 (p3-HID403)	buccal mucosa	Staphylococcus aureus - PID40	0
+p3-SID4047	p3-HID403	p3-SID4047 (p3-HID403)	buccal mucosa	Pseudomonas aeruginosa 27873 - PID25	1
+p3-SID4047	p3-HID403	p3-SID4047 (p3-HID403)	buccal mucosa	Enterobacter cloacae - PID17	0
+p3-SID4047	p3-HID403	p3-SID4047 (p3-HID403)	buccal mucosa	Bacillus subtilis - PID29	0
+p3-SID4047	p3-HID403	p3-SID4047 (p3-HID403)	buccal mucosa	Pseudomonas aeruginosa PAO1 - PID38	0
+p3-SID4047	p3-HID403	p3-SID4047 (p3-HID403)	buccal mucosa	Klebsiella oxytoca - PID21	0
+p3-SID4047	p3-HID403	p3-SID4047 (p3-HID403)	buccal mucosa	Bacillus cereus - PID30	0
+p3-SID4047	p3-HID403	p3-SID4047 (p3-HID403)	buccal mucosa	Proteus vulgaris - PID24	0
+p3-SID4047	p3-HID403	p3-SID4047 (p3-HID403)	buccal mucosa	Citrobacter freundii - PID22	0
+p3-SID4047	p3-HID403	p3-SID4047 (p3-HID403)	buccal mucosa	Serratia marcescens 8055 - PID31	0
+p3-SID4047	p3-HID403	p3-SID4047 (p3-HID403)	buccal mucosa	Escherichia coli - PID37	0
+p3-SID4047	p3-HID403	p3-SID4047 (p3-HID403)	buccal mucosa	Acinetobacter baumannii - PID42	0
+p3-SID4049	p3-HID404	p3-SID4049 (p3-HID404)	buccal mucosa	Cryptococcus neoformans H99 - PID49	0
+p3-SID4049	p3-HID404	p3-SID4049 (p3-HID404)	buccal mucosa	Rhodococcus corynebacteroides - PID5	3
+p3-SID4049	p3-HID404	p3-SID4049 (p3-HID404)	buccal mucosa	Rhizopus oryzae - PID11	0
+p3-SID4049	p3-HID404	p3-SID4049 (p3-HID404)	buccal mucosa	Candida sp. - PID36	0
+p3-SID4049	p3-HID404	p3-SID4049 (p3-HID404)	buccal mucosa	Aspergillus flavus - PID14	0
+p3-SID4049	p3-HID404	p3-SID4049 (p3-HID404)	buccal mucosa	Candida albicans K1 - PID39	0
+p3-SID4049	p3-HID404	p3-SID4049 (p3-HID404)	buccal mucosa	Micrococcus luteus - PID19	3
+p3-SID4049	p3-HID404	p3-SID4049 (p3-HID404)	buccal mucosa	Trichosporon asahii - PID56	0
+p3-SID4049	p3-HID404	p3-SID4049 (p3-HID404)	buccal mucosa	Staphylococcus epidermidis - PID18	0
+p3-SID4049	p3-HID404	p3-SID4049 (p3-HID404)	buccal mucosa	Enterococcus faecalis - PID41	0
+p3-SID4049	p3-HID404	p3-SID4049 (p3-HID404)	buccal mucosa	Staphylococcus aureus - PID40	0
+p3-SID4049	p3-HID404	p3-SID4049 (p3-HID404)	buccal mucosa	Pseudomonas aeruginosa 27873 - PID25	2
+p3-SID4049	p3-HID404	p3-SID4049 (p3-HID404)	buccal mucosa	Enterobacter cloacae - PID17	0
+p3-SID4049	p3-HID404	p3-SID4049 (p3-HID404)	buccal mucosa	Bacillus subtilis - PID29	0
+p3-SID4049	p3-HID404	p3-SID4049 (p3-HID404)	buccal mucosa	Pseudomonas aeruginosa PAO1 - PID38	0
+p3-SID4049	p3-HID404	p3-SID4049 (p3-HID404)	buccal mucosa	Klebsiella oxytoca - PID21	0
+p3-SID4049	p3-HID404	p3-SID4049 (p3-HID404)	buccal mucosa	Bacillus cereus - PID30	0
+p3-SID4049	p3-HID404	p3-SID4049 (p3-HID404)	buccal mucosa	Proteus vulgaris - PID24	0
+p3-SID4049	p3-HID404	p3-SID4049 (p3-HID404)	buccal mucosa	Citrobacter freundii - PID22	0
+p3-SID4049	p3-HID404	p3-SID4049 (p3-HID404)	buccal mucosa	Serratia marcescens 8055 - PID31	0
+p3-SID4049	p3-HID404	p3-SID4049 (p3-HID404)	buccal mucosa	Escherichia coli - PID37	0
+p3-SID4049	p3-HID404	p3-SID4049 (p3-HID404)	buccal mucosa	Acinetobacter baumannii - PID42	0
+p3-SID4054	p3-HID404	p3-SID4054 (p3-HID404)	buccal mucosa	Cryptococcus neoformans H99 - PID49	0
+p3-SID4054	p3-HID404	p3-SID4054 (p3-HID404)	buccal mucosa	Rhodococcus corynebacteroides - PID5	3
+p3-SID4054	p3-HID404	p3-SID4054 (p3-HID404)	buccal mucosa	Rhizopus oryzae - PID11	0
+p3-SID4054	p3-HID404	p3-SID4054 (p3-HID404)	buccal mucosa	Candida sp. - PID36	0
+p3-SID4054	p3-HID404	p3-SID4054 (p3-HID404)	buccal mucosa	Aspergillus flavus - PID14	0
+p3-SID4054	p3-HID404	p3-SID4054 (p3-HID404)	buccal mucosa	Trichosporon asahii - PID56	0
+p3-SID4054	p3-HID404	p3-SID4054 (p3-HID404)	buccal mucosa	Staphylococcus epidermidis - PID18	0
+p3-SID4054	p3-HID404	p3-SID4054 (p3-HID404)	buccal mucosa	Enterococcus faecalis - PID41	0
+p3-SID4054	p3-HID404	p3-SID4054 (p3-HID404)	buccal mucosa	Staphylococcus aureus - PID40	0
+p3-SID4054	p3-HID404	p3-SID4054 (p3-HID404)	buccal mucosa	Pseudomonas aeruginosa 27873 - PID25	0
+p3-SID4054	p3-HID404	p3-SID4054 (p3-HID404)	buccal mucosa	Enterobacter cloacae - PID17	0
+p3-SID4054	p3-HID404	p3-SID4054 (p3-HID404)	buccal mucosa	Bacillus subtilis - PID29	0
+p3-SID4054	p3-HID404	p3-SID4054 (p3-HID404)	buccal mucosa	Pseudomonas aeruginosa PAO1 - PID38	0
+p3-SID4054	p3-HID404	p3-SID4054 (p3-HID404)	buccal mucosa	Klebsiella oxytoca - PID21	0
+p3-SID4054	p3-HID404	p3-SID4054 (p3-HID404)	buccal mucosa	Bacillus cereus - PID30	0
+p3-SID4054	p3-HID404	p3-SID4054 (p3-HID404)	buccal mucosa	Proteus vulgaris - PID24	0
+p3-SID4054	p3-HID404	p3-SID4054 (p3-HID404)	buccal mucosa	Citrobacter freundii - PID22	0
+p3-SID4054	p3-HID404	p3-SID4054 (p3-HID404)	buccal mucosa	Serratia marcescens 8055 - PID31	0
+p3-SID4054	p3-HID404	p3-SID4054 (p3-HID404)	buccal mucosa	Escherichia coli - PID37	0
+p3-SID4054	p3-HID404	p3-SID4054 (p3-HID404)	buccal mucosa	Acinetobacter baumannii - PID42	0
+p3-SID4054	p3-HID404	p3-SID4054 (p3-HID404)	buccal mucosa	Candida albicans K1 - PID39	0
+p3-SID4054	p3-HID404	p3-SID4054 (p3-HID404)	buccal mucosa	Micrococcus luteus - PID19	3
+p3-SID4066	p3-HID406	p3-SID4066 (p3-HID406)	buccal mucosa	Cryptococcus neoformans H99 - PID49	0
+p3-SID4066	p3-HID406	p3-SID4066 (p3-HID406)	buccal mucosa	Rhodococcus corynebacteroides - PID5	3
+p3-SID4066	p3-HID406	p3-SID4066 (p3-HID406)	buccal mucosa	Rhizopus oryzae - PID11	0
+p3-SID4066	p3-HID406	p3-SID4066 (p3-HID406)	buccal mucosa	Candida sp. - PID36	0
+p3-SID4066	p3-HID406	p3-SID4066 (p3-HID406)	buccal mucosa	Aspergillus flavus - PID14	0
+p3-SID4066	p3-HID406	p3-SID4066 (p3-HID406)	buccal mucosa	Candida albicans K1 - PID39	0
+p3-SID4066	p3-HID406	p3-SID4066 (p3-HID406)	buccal mucosa	Micrococcus luteus - PID19	3
+p3-SID4066	p3-HID406	p3-SID4066 (p3-HID406)	buccal mucosa	Trichosporon asahii - PID56	0
+p3-SID4066	p3-HID406	p3-SID4066 (p3-HID406)	buccal mucosa	Staphylococcus epidermidis - PID18	0
+p3-SID4066	p3-HID406	p3-SID4066 (p3-HID406)	buccal mucosa	Enterococcus faecalis - PID41	0
+p3-SID4066	p3-HID406	p3-SID4066 (p3-HID406)	buccal mucosa	Staphylococcus aureus - PID40	0
+p3-SID4066	p3-HID406	p3-SID4066 (p3-HID406)	buccal mucosa	Pseudomonas aeruginosa 27873 - PID25	0
+p3-SID4066	p3-HID406	p3-SID4066 (p3-HID406)	buccal mucosa	Enterobacter cloacae - PID17	0
+p3-SID4066	p3-HID406	p3-SID4066 (p3-HID406)	buccal mucosa	Bacillus subtilis - PID29	0
+p3-SID4066	p3-HID406	p3-SID4066 (p3-HID406)	buccal mucosa	Pseudomonas aeruginosa PAO1 - PID38	0
+p3-SID4066	p3-HID406	p3-SID4066 (p3-HID406)	buccal mucosa	Klebsiella oxytoca - PID21	0
+p3-SID4066	p3-HID406	p3-SID4066 (p3-HID406)	buccal mucosa	Serratia marcescens 8055 - PID31	0
+p3-SID4066	p3-HID406	p3-SID4066 (p3-HID406)	buccal mucosa	Escherichia coli - PID37	0
+p3-SID4066	p3-HID406	p3-SID4066 (p3-HID406)	buccal mucosa	Bacillus cereus - PID30	0
+p3-SID4066	p3-HID406	p3-SID4066 (p3-HID406)	buccal mucosa	Proteus vulgaris - PID24	0
+p3-SID4066	p3-HID406	p3-SID4066 (p3-HID406)	buccal mucosa	Citrobacter freundii - PID22	0
+p3-SID4066	p3-HID406	p3-SID4066 (p3-HID406)	buccal mucosa	Acinetobacter baumannii - PID42	0
+p3-SID4073	p3-HID407	p3-SID4073 (p3-HID407)	buccal mucosa	Cryptococcus neoformans H99 - PID49	0
+p3-SID4073	p3-HID407	p3-SID4073 (p3-HID407)	buccal mucosa	Rhodococcus corynebacteroides - PID5	3
+p3-SID4073	p3-HID407	p3-SID4073 (p3-HID407)	buccal mucosa	Rhizopus oryzae - PID11	0
+p3-SID4073	p3-HID407	p3-SID4073 (p3-HID407)	buccal mucosa	Candida sp. - PID36	0
+p3-SID4073	p3-HID407	p3-SID4073 (p3-HID407)	buccal mucosa	Aspergillus flavus - PID14	0
+p3-SID4073	p3-HID407	p3-SID4073 (p3-HID407)	buccal mucosa	Candida albicans K1 - PID39	0
+p3-SID4073	p3-HID407	p3-SID4073 (p3-HID407)	buccal mucosa	Micrococcus luteus - PID19	3
+p3-SID4073	p3-HID407	p3-SID4073 (p3-HID407)	buccal mucosa	Trichosporon asahii - PID56	0
+p3-SID4073	p3-HID407	p3-SID4073 (p3-HID407)	buccal mucosa	Staphylococcus epidermidis - PID18	0
+p3-SID4073	p3-HID407	p3-SID4073 (p3-HID407)	buccal mucosa	Enterococcus faecalis - PID41	0
+p3-SID4073	p3-HID407	p3-SID4073 (p3-HID407)	buccal mucosa	Staphylococcus aureus - PID40	0
+p3-SID4073	p3-HID407	p3-SID4073 (p3-HID407)	buccal mucosa	Pseudomonas aeruginosa 27873 - PID25	0
+p3-SID4073	p3-HID407	p3-SID4073 (p3-HID407)	buccal mucosa	Enterobacter cloacae - PID17	0
+p3-SID4073	p3-HID407	p3-SID4073 (p3-HID407)	buccal mucosa	Bacillus subtilis - PID29	0
+p3-SID4073	p3-HID407	p3-SID4073 (p3-HID407)	buccal mucosa	Pseudomonas aeruginosa PAO1 - PID38	0
+p3-SID4073	p3-HID407	p3-SID4073 (p3-HID407)	buccal mucosa	Klebsiella oxytoca - PID21	0
+p3-SID4073	p3-HID407	p3-SID4073 (p3-HID407)	buccal mucosa	Bacillus cereus - PID30	0
+p3-SID4073	p3-HID407	p3-SID4073 (p3-HID407)	buccal mucosa	Proteus vulgaris - PID24	0
+p3-SID4073	p3-HID407	p3-SID4073 (p3-HID407)	buccal mucosa	Citrobacter freundii - PID22	0
+p3-SID4073	p3-HID407	p3-SID4073 (p3-HID407)	buccal mucosa	Escherichia coli - PID37	0
+p3-SID4073	p3-HID407	p3-SID4073 (p3-HID407)	buccal mucosa	Acinetobacter baumannii - PID42	0
+p3-SID4073	p3-HID407	p3-SID4073 (p3-HID407)	buccal mucosa	Serratia marcescens 8055 - PID31	0
+p3-SID4075	p3-HID407	p3-SID4075 (p3-HID407)	buccal mucosa	Staphylococcus aureus - PID40	0
+p3-SID4075	p3-HID407	p3-SID4075 (p3-HID407)	buccal mucosa	Pseudomonas aeruginosa 27873 - PID25	0
+p3-SID4075	p3-HID407	p3-SID4075 (p3-HID407)	buccal mucosa	Enterobacter cloacae - PID17	0
+p3-SID4075	p3-HID407	p3-SID4075 (p3-HID407)	buccal mucosa	Bacillus subtilis - PID29	0
+p3-SID4075	p3-HID407	p3-SID4075 (p3-HID407)	buccal mucosa	Pseudomonas aeruginosa PAO1 - PID38	0
+p3-SID4075	p3-HID407	p3-SID4075 (p3-HID407)	buccal mucosa	Klebsiella oxytoca - PID21	0
+p3-SID4075	p3-HID407	p3-SID4075 (p3-HID407)	buccal mucosa	Bacillus cereus - PID30	0
+p3-SID4075	p3-HID407	p3-SID4075 (p3-HID407)	buccal mucosa	Proteus vulgaris - PID24	0
+p3-SID4075	p3-HID407	p3-SID4075 (p3-HID407)	buccal mucosa	Citrobacter freundii - PID22	0
+p3-SID4075	p3-HID407	p3-SID4075 (p3-HID407)	buccal mucosa	Serratia marcescens 8055 - PID31	0
+p3-SID4075	p3-HID407	p3-SID4075 (p3-HID407)	buccal mucosa	Escherichia coli - PID37	0
+p3-SID4075	p3-HID407	p3-SID4075 (p3-HID407)	buccal mucosa	Acinetobacter baumannii - PID42	0
+p3-SID4075	p3-HID407	p3-SID4075 (p3-HID407)	buccal mucosa	Cryptococcus neoformans H99 - PID49	0
+p3-SID4075	p3-HID407	p3-SID4075 (p3-HID407)	buccal mucosa	Rhizopus oryzae - PID11	0
+p3-SID4075	p3-HID407	p3-SID4075 (p3-HID407)	buccal mucosa	Candida sp. - PID36	0
+p3-SID4075	p3-HID407	p3-SID4075 (p3-HID407)	buccal mucosa	Aspergillus flavus - PID14	0
+p3-SID4075	p3-HID407	p3-SID4075 (p3-HID407)	buccal mucosa	Candida albicans K1 - PID39	0
+p3-SID4075	p3-HID407	p3-SID4075 (p3-HID407)	buccal mucosa	Micrococcus luteus - PID19	3
+p3-SID4075	p3-HID407	p3-SID4075 (p3-HID407)	buccal mucosa	Trichosporon asahii - PID56	0
+p3-SID4075	p3-HID407	p3-SID4075 (p3-HID407)	buccal mucosa	Staphylococcus epidermidis - PID18	0
+p3-SID4075	p3-HID407	p3-SID4075 (p3-HID407)	buccal mucosa	Enterococcus faecalis - PID41	0
+p3-SID4075	p3-HID407	p3-SID4075 (p3-HID407)	buccal mucosa	Rhodococcus corynebacteroides - PID5	3
+p3-SID4078	p3-HID408	p3-SID4078 (p3-HID408)	buccal mucosa	Cryptococcus neoformans H99 - PID49	0
+p3-SID4078	p3-HID408	p3-SID4078 (p3-HID408)	buccal mucosa	Rhodococcus corynebacteroides - PID5	3
+p3-SID4078	p3-HID408	p3-SID4078 (p3-HID408)	buccal mucosa	Rhizopus oryzae - PID11	0
+p3-SID4078	p3-HID408	p3-SID4078 (p3-HID408)	buccal mucosa	Candida sp. - PID36	0
+p3-SID4078	p3-HID408	p3-SID4078 (p3-HID408)	buccal mucosa	Aspergillus flavus - PID14	0
+p3-SID4078	p3-HID408	p3-SID4078 (p3-HID408)	buccal mucosa	Candida albicans K1 - PID39	0
+p3-SID4078	p3-HID408	p3-SID4078 (p3-HID408)	buccal mucosa	Trichosporon asahii - PID56	0
+p3-SID4078	p3-HID408	p3-SID4078 (p3-HID408)	buccal mucosa	Staphylococcus epidermidis - PID18	0
+p3-SID4078	p3-HID408	p3-SID4078 (p3-HID408)	buccal mucosa	Enterococcus faecalis - PID41	0
+p3-SID4078	p3-HID408	p3-SID4078 (p3-HID408)	buccal mucosa	Staphylococcus aureus - PID40	0
+p3-SID4078	p3-HID408	p3-SID4078 (p3-HID408)	buccal mucosa	Pseudomonas aeruginosa 27873 - PID25	0
+p3-SID4078	p3-HID408	p3-SID4078 (p3-HID408)	buccal mucosa	Enterobacter cloacae - PID17	0
+p3-SID4078	p3-HID408	p3-SID4078 (p3-HID408)	buccal mucosa	Bacillus subtilis - PID29	0
+p3-SID4078	p3-HID408	p3-SID4078 (p3-HID408)	buccal mucosa	Pseudomonas aeruginosa PAO1 - PID38	0
+p3-SID4078	p3-HID408	p3-SID4078 (p3-HID408)	buccal mucosa	Klebsiella oxytoca - PID21	0
+p3-SID4078	p3-HID408	p3-SID4078 (p3-HID408)	buccal mucosa	Bacillus cereus - PID30	0
+p3-SID4078	p3-HID408	p3-SID4078 (p3-HID408)	buccal mucosa	Proteus vulgaris - PID24	0
+p3-SID4078	p3-HID408	p3-SID4078 (p3-HID408)	buccal mucosa	Citrobacter freundii - PID22	0
+p3-SID4078	p3-HID408	p3-SID4078 (p3-HID408)	buccal mucosa	Serratia marcescens 8055 - PID31	0
+p3-SID4078	p3-HID408	p3-SID4078 (p3-HID408)	buccal mucosa	Escherichia coli - PID37	0
+p3-SID4078	p3-HID408	p3-SID4078 (p3-HID408)	buccal mucosa	Acinetobacter baumannii - PID42	0
+p3-SID4078	p3-HID408	p3-SID4078 (p3-HID408)	buccal mucosa	Micrococcus luteus - PID19	3
+p3-SID4099	p3-HID410	p3-SID4099 (p3-HID410)	buccal mucosa	Cryptococcus neoformans H99 - PID49	0
+p3-SID4099	p3-HID410	p3-SID4099 (p3-HID410)	buccal mucosa	Rhodococcus corynebacteroides - PID5	3
+p3-SID4099	p3-HID410	p3-SID4099 (p3-HID410)	buccal mucosa	Rhizopus oryzae - PID11	0
+p3-SID4099	p3-HID410	p3-SID4099 (p3-HID410)	buccal mucosa	Aspergillus flavus - PID14	0
+p3-SID4099	p3-HID410	p3-SID4099 (p3-HID410)	buccal mucosa	Micrococcus luteus - PID19	0
+p3-SID4099	p3-HID410	p3-SID4099 (p3-HID410)	buccal mucosa	Trichosporon asahii - PID56	0
+p3-SID4099	p3-HID410	p3-SID4099 (p3-HID410)	buccal mucosa	Staphylococcus epidermidis - PID18	0
+p3-SID4099	p3-HID410	p3-SID4099 (p3-HID410)	buccal mucosa	Enterococcus faecalis - PID41	0
+p3-SID4099	p3-HID410	p3-SID4099 (p3-HID410)	buccal mucosa	Staphylococcus aureus - PID40	0
+p3-SID4099	p3-HID410	p3-SID4099 (p3-HID410)	buccal mucosa	Pseudomonas aeruginosa 27873 - PID25	0
+p3-SID4099	p3-HID410	p3-SID4099 (p3-HID410)	buccal mucosa	Enterobacter cloacae - PID17	0
+p3-SID4099	p3-HID410	p3-SID4099 (p3-HID410)	buccal mucosa	Bacillus subtilis - PID29	0
+p3-SID4099	p3-HID410	p3-SID4099 (p3-HID410)	buccal mucosa	Pseudomonas aeruginosa PAO1 - PID38	0
+p3-SID4099	p3-HID410	p3-SID4099 (p3-HID410)	buccal mucosa	Bacillus cereus - PID30	0
+p3-SID4099	p3-HID410	p3-SID4099 (p3-HID410)	buccal mucosa	Proteus vulgaris - PID24	0
+p3-SID4099	p3-HID410	p3-SID4099 (p3-HID410)	buccal mucosa	Serratia marcescens 8055 - PID31	0
+p3-SID4099	p3-HID410	p3-SID4099 (p3-HID410)	buccal mucosa	Escherichia coli - PID37	0
+p3-SID4099	p3-HID410	p3-SID4099 (p3-HID410)	buccal mucosa	Acinetobacter baumannii - PID42	0
+p3-SID4099	p3-HID410	p3-SID4099 (p3-HID410)	buccal mucosa	Candida sp. - PID36	0
+p3-SID4099	p3-HID410	p3-SID4099 (p3-HID410)	buccal mucosa	Candida albicans K1 - PID39	0
+p3-SID4099	p3-HID410	p3-SID4099 (p3-HID410)	buccal mucosa	Citrobacter freundii - PID22	0
+p3-SID4099	p3-HID410	p3-SID4099 (p3-HID410)	buccal mucosa	Klebsiella oxytoca - PID21	0
+p3-SID4100	p3-HID411	p3-SID4100 (p3-HID411)	dorsum of tongue	Cryptococcus neoformans H99 - PID49	0
+p3-SID4100	p3-HID411	p3-SID4100 (p3-HID411)	dorsum of tongue	Rhodococcus corynebacteroides - PID5	3
+p3-SID4100	p3-HID411	p3-SID4100 (p3-HID411)	dorsum of tongue	Rhizopus oryzae - PID11	0
+p3-SID4100	p3-HID411	p3-SID4100 (p3-HID411)	dorsum of tongue	Candida sp. - PID36	0
+p3-SID4100	p3-HID411	p3-SID4100 (p3-HID411)	dorsum of tongue	Aspergillus flavus - PID14	0
+p3-SID4100	p3-HID411	p3-SID4100 (p3-HID411)	dorsum of tongue	Candida albicans K1 - PID39	0
+p3-SID4100	p3-HID411	p3-SID4100 (p3-HID411)	dorsum of tongue	Trichosporon asahii - PID56	0
+p3-SID4100	p3-HID411	p3-SID4100 (p3-HID411)	dorsum of tongue	Staphylococcus epidermidis - PID18	0
+p3-SID4100	p3-HID411	p3-SID4100 (p3-HID411)	dorsum of tongue	Enterococcus faecalis - PID41	0
+p3-SID4100	p3-HID411	p3-SID4100 (p3-HID411)	dorsum of tongue	Staphylococcus aureus - PID40	0
+p3-SID4100	p3-HID411	p3-SID4100 (p3-HID411)	dorsum of tongue	Pseudomonas aeruginosa 27873 - PID25	3
+p3-SID4100	p3-HID411	p3-SID4100 (p3-HID411)	dorsum of tongue	Enterobacter cloacae - PID17	0
+p3-SID4100	p3-HID411	p3-SID4100 (p3-HID411)	dorsum of tongue	Bacillus subtilis - PID29	0
+p3-SID4100	p3-HID411	p3-SID4100 (p3-HID411)	dorsum of tongue	Pseudomonas aeruginosa PAO1 - PID38	0
+p3-SID4100	p3-HID411	p3-SID4100 (p3-HID411)	dorsum of tongue	Klebsiella oxytoca - PID21	0
+p3-SID4100	p3-HID411	p3-SID4100 (p3-HID411)	dorsum of tongue	Bacillus cereus - PID30	0
+p3-SID4100	p3-HID411	p3-SID4100 (p3-HID411)	dorsum of tongue	Proteus vulgaris - PID24	0
+p3-SID4100	p3-HID411	p3-SID4100 (p3-HID411)	dorsum of tongue	Citrobacter freundii - PID22	0
+p3-SID4100	p3-HID411	p3-SID4100 (p3-HID411)	dorsum of tongue	Serratia marcescens 8055 - PID31	0
+p3-SID4100	p3-HID411	p3-SID4100 (p3-HID411)	dorsum of tongue	Escherichia coli - PID37	0
+p3-SID4100	p3-HID411	p3-SID4100 (p3-HID411)	dorsum of tongue	Acinetobacter baumannii - PID42	3
+p3-SID4117	p3-HID412	p3-SID4117 (p3-HID412)	dorsum of tongue	Cryptococcus neoformans H99 - PID49	0
+p3-SID4117	p3-HID412	p3-SID4117 (p3-HID412)	dorsum of tongue	Rhodococcus corynebacteroides - PID5	3
+p3-SID4117	p3-HID412	p3-SID4117 (p3-HID412)	dorsum of tongue	Rhizopus oryzae - PID11	0
+p3-SID4117	p3-HID412	p3-SID4117 (p3-HID412)	dorsum of tongue	Candida sp. - PID36	0
+p3-SID4117	p3-HID412	p3-SID4117 (p3-HID412)	dorsum of tongue	Aspergillus flavus - PID14	0
+p3-SID4117	p3-HID412	p3-SID4117 (p3-HID412)	dorsum of tongue	Candida albicans K1 - PID39	0
+p3-SID4117	p3-HID412	p3-SID4117 (p3-HID412)	dorsum of tongue	Trichosporon asahii - PID56	0
+p3-SID4117	p3-HID412	p3-SID4117 (p3-HID412)	dorsum of tongue	Staphylococcus epidermidis - PID18	0
+p3-SID4117	p3-HID412	p3-SID4117 (p3-HID412)	dorsum of tongue	Enterococcus faecalis - PID41	0
+p3-SID4117	p3-HID412	p3-SID4117 (p3-HID412)	dorsum of tongue	Staphylococcus aureus - PID40	0
+p3-SID4117	p3-HID412	p3-SID4117 (p3-HID412)	dorsum of tongue	Pseudomonas aeruginosa 27873 - PID25	0
+p3-SID4117	p3-HID412	p3-SID4117 (p3-HID412)	dorsum of tongue	Enterobacter cloacae - PID17	0
+p3-SID4117	p3-HID412	p3-SID4117 (p3-HID412)	dorsum of tongue	Bacillus subtilis - PID29	0
+p3-SID4117	p3-HID412	p3-SID4117 (p3-HID412)	dorsum of tongue	Pseudomonas aeruginosa PAO1 - PID38	0
+p3-SID4117	p3-HID412	p3-SID4117 (p3-HID412)	dorsum of tongue	Klebsiella oxytoca - PID21	0
+p3-SID4117	p3-HID412	p3-SID4117 (p3-HID412)	dorsum of tongue	Bacillus cereus - PID30	0
+p3-SID4117	p3-HID412	p3-SID4117 (p3-HID412)	dorsum of tongue	Proteus vulgaris - PID24	0
+p3-SID4117	p3-HID412	p3-SID4117 (p3-HID412)	dorsum of tongue	Citrobacter freundii - PID22	0
+p3-SID4117	p3-HID412	p3-SID4117 (p3-HID412)	dorsum of tongue	Serratia marcescens 8055 - PID31	0
+p3-SID4117	p3-HID412	p3-SID4117 (p3-HID412)	dorsum of tongue	Escherichia coli - PID37	0
+p3-SID4117	p3-HID412	p3-SID4117 (p3-HID412)	dorsum of tongue	Acinetobacter baumannii - PID42	0
+p3-SID4123	p3-HID413	p3-SID4123 (p3-HID413)	dorsum of tongue	Cryptococcus neoformans H99 - PID49	0
+p3-SID4123	p3-HID413	p3-SID4123 (p3-HID413)	dorsum of tongue	Rhodococcus corynebacteroides - PID5	3
+p3-SID4123	p3-HID413	p3-SID4123 (p3-HID413)	dorsum of tongue	Rhizopus oryzae - PID11	0
+p3-SID4123	p3-HID413	p3-SID4123 (p3-HID413)	dorsum of tongue	Candida sp. - PID36	0
+p3-SID4123	p3-HID413	p3-SID4123 (p3-HID413)	dorsum of tongue	Aspergillus flavus - PID14	0
+p3-SID4123	p3-HID413	p3-SID4123 (p3-HID413)	dorsum of tongue	Candida albicans K1 - PID39	0
+p3-SID4123	p3-HID413	p3-SID4123 (p3-HID413)	dorsum of tongue	Trichosporon asahii - PID56	0
+p3-SID4123	p3-HID413	p3-SID4123 (p3-HID413)	dorsum of tongue	Staphylococcus epidermidis - PID18	0
+p3-SID4123	p3-HID413	p3-SID4123 (p3-HID413)	dorsum of tongue	Enterococcus faecalis - PID41	0
+p3-SID4123	p3-HID413	p3-SID4123 (p3-HID413)	dorsum of tongue	Staphylococcus aureus - PID40	0
+p3-SID4123	p3-HID413	p3-SID4123 (p3-HID413)	dorsum of tongue	Pseudomonas aeruginosa 27873 - PID25	3
+p3-SID4123	p3-HID413	p3-SID4123 (p3-HID413)	dorsum of tongue	Enterobacter cloacae - PID17	0
+p3-SID4123	p3-HID413	p3-SID4123 (p3-HID413)	dorsum of tongue	Bacillus subtilis - PID29	0
+p3-SID4123	p3-HID413	p3-SID4123 (p3-HID413)	dorsum of tongue	Pseudomonas aeruginosa PAO1 - PID38	0
+p3-SID4123	p3-HID413	p3-SID4123 (p3-HID413)	dorsum of tongue	Bacillus cereus - PID30	0
+p3-SID4123	p3-HID413	p3-SID4123 (p3-HID413)	dorsum of tongue	Proteus vulgaris - PID24	0
+p3-SID4123	p3-HID413	p3-SID4123 (p3-HID413)	dorsum of tongue	Citrobacter freundii - PID22	0
+p3-SID4123	p3-HID413	p3-SID4123 (p3-HID413)	dorsum of tongue	Serratia marcescens 8055 - PID31	0
+p3-SID4123	p3-HID413	p3-SID4123 (p3-HID413)	dorsum of tongue	Escherichia coli - PID37	0
+p3-SID4123	p3-HID413	p3-SID4123 (p3-HID413)	dorsum of tongue	Acinetobacter baumannii - PID42	3
+p3-SID4123	p3-HID413	p3-SID4123 (p3-HID413)	dorsum of tongue	Micrococcus luteus - PID19	3
+p3-SID4123	p3-HID413	p3-SID4123 (p3-HID413)	dorsum of tongue	Klebsiella oxytoca - PID21	0
+p3-SID4129	p3-HID414	p3-SID4129 (p3-HID414)	dorsum of tongue	Cryptococcus neoformans H99 - PID49	0
+p3-SID4129	p3-HID414	p3-SID4129 (p3-HID414)	dorsum of tongue	Rhodococcus corynebacteroides - PID5	3
+p3-SID4129	p3-HID414	p3-SID4129 (p3-HID414)	dorsum of tongue	Rhizopus oryzae - PID11	0
+p3-SID4129	p3-HID414	p3-SID4129 (p3-HID414)	dorsum of tongue	Candida sp. - PID36	0
+p3-SID4129	p3-HID414	p3-SID4129 (p3-HID414)	dorsum of tongue	Aspergillus flavus - PID14	0
+p3-SID4129	p3-HID414	p3-SID4129 (p3-HID414)	dorsum of tongue	Candida albicans K1 - PID39	0
+p3-SID4129	p3-HID414	p3-SID4129 (p3-HID414)	dorsum of tongue	Micrococcus luteus - PID19	0
+p3-SID4129	p3-HID414	p3-SID4129 (p3-HID414)	dorsum of tongue	Trichosporon asahii - PID56	0
+p3-SID4129	p3-HID414	p3-SID4129 (p3-HID414)	dorsum of tongue	Staphylococcus epidermidis - PID18	0
+p3-SID4129	p3-HID414	p3-SID4129 (p3-HID414)	dorsum of tongue	Enterococcus faecalis - PID41	0
+p3-SID4129	p3-HID414	p3-SID4129 (p3-HID414)	dorsum of tongue	Staphylococcus aureus - PID40	0
+p3-SID4129	p3-HID414	p3-SID4129 (p3-HID414)	dorsum of tongue	Pseudomonas aeruginosa 27873 - PID25	0
+p3-SID4129	p3-HID414	p3-SID4129 (p3-HID414)	dorsum of tongue	Enterobacter cloacae - PID17	0
+p3-SID4129	p3-HID414	p3-SID4129 (p3-HID414)	dorsum of tongue	Bacillus subtilis - PID29	0
+p3-SID4129	p3-HID414	p3-SID4129 (p3-HID414)	dorsum of tongue	Pseudomonas aeruginosa PAO1 - PID38	0
+p3-SID4129	p3-HID414	p3-SID4129 (p3-HID414)	dorsum of tongue	Klebsiella oxytoca - PID21	0
+p3-SID4129	p3-HID414	p3-SID4129 (p3-HID414)	dorsum of tongue	Bacillus cereus - PID30	0
+p3-SID4129	p3-HID414	p3-SID4129 (p3-HID414)	dorsum of tongue	Proteus vulgaris - PID24	0
+p3-SID4129	p3-HID414	p3-SID4129 (p3-HID414)	dorsum of tongue	Citrobacter freundii - PID22	0
+p3-SID4129	p3-HID414	p3-SID4129 (p3-HID414)	dorsum of tongue	Serratia marcescens 8055 - PID31	0
+p3-SID4129	p3-HID414	p3-SID4129 (p3-HID414)	dorsum of tongue	Escherichia coli - PID37	0
+p3-SID4129	p3-HID414	p3-SID4129 (p3-HID414)	dorsum of tongue	Acinetobacter baumannii - PID42	0
+p3-SID4368	p3-HID426	p3-SID4368 (p3-HID426)	buccal mucosa	Cryptococcus neoformans H99 - PID49	0
+p3-SID4368	p3-HID426	p3-SID4368 (p3-HID426)	buccal mucosa	Rhodococcus corynebacteroides - PID5	3
+p3-SID4368	p3-HID426	p3-SID4368 (p3-HID426)	buccal mucosa	Rhizopus oryzae - PID11	0
+p3-SID4368	p3-HID426	p3-SID4368 (p3-HID426)	buccal mucosa	Candida sp. - PID36	0
+p3-SID4368	p3-HID426	p3-SID4368 (p3-HID426)	buccal mucosa	Aspergillus flavus - PID14	0
+p3-SID4368	p3-HID426	p3-SID4368 (p3-HID426)	buccal mucosa	Candida albicans K1 - PID39	0
+p3-SID4368	p3-HID426	p3-SID4368 (p3-HID426)	buccal mucosa	Micrococcus luteus - PID19	3
+p3-SID4368	p3-HID426	p3-SID4368 (p3-HID426)	buccal mucosa	Trichosporon asahii - PID56	0
+p3-SID4368	p3-HID426	p3-SID4368 (p3-HID426)	buccal mucosa	Staphylococcus epidermidis - PID18	0
+p3-SID4368	p3-HID426	p3-SID4368 (p3-HID426)	buccal mucosa	Enterococcus faecalis - PID41	0
+p3-SID4368	p3-HID426	p3-SID4368 (p3-HID426)	buccal mucosa	Staphylococcus aureus - PID40	0
+p3-SID4368	p3-HID426	p3-SID4368 (p3-HID426)	buccal mucosa	Pseudomonas aeruginosa 27873 - PID25	0
+p3-SID4368	p3-HID426	p3-SID4368 (p3-HID426)	buccal mucosa	Enterobacter cloacae - PID17	0
+p3-SID4368	p3-HID426	p3-SID4368 (p3-HID426)	buccal mucosa	Bacillus subtilis - PID29	0
+p3-SID4368	p3-HID426	p3-SID4368 (p3-HID426)	buccal mucosa	Pseudomonas aeruginosa PAO1 - PID38	0
+p3-SID4368	p3-HID426	p3-SID4368 (p3-HID426)	buccal mucosa	Klebsiella oxytoca - PID21	0
+p3-SID4368	p3-HID426	p3-SID4368 (p3-HID426)	buccal mucosa	Bacillus cereus - PID30	0
+p3-SID4368	p3-HID426	p3-SID4368 (p3-HID426)	buccal mucosa	Proteus vulgaris - PID24	0
+p3-SID4368	p3-HID426	p3-SID4368 (p3-HID426)	buccal mucosa	Citrobacter freundii - PID22	0
+p3-SID4368	p3-HID426	p3-SID4368 (p3-HID426)	buccal mucosa	Serratia marcescens 8055 - PID31	0
+p3-SID4368	p3-HID426	p3-SID4368 (p3-HID426)	buccal mucosa	Escherichia coli - PID37	0
