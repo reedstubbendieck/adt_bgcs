@@ -35,7 +35,7 @@ for file in os.listdir(input_path):
         print(file_prefix)
         if not os.path.exists(output_path+file_prefix):
             os.makedirs(output_path+file_prefix)
-        # check if kallisto has already been run, if so moves on and deltes the .tar.bz2 file
+        # check if kallisto has already been run, if so moves on and deletes the .tar.bz2 file
         if os.path.isfile(output_path+file_prefix+"/abundance.tsv"):
             print(output_path+file_prefix+"/abundance.tsv exists")
             del_call_1 = "rm -rf "+input_path+file
